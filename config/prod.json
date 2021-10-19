@@ -1,14 +1,8 @@
 {
     "language": "Solidity",
     "sources": {
-        "contracts/MapleLoan.sol": {
-            "urls": ["contracts/MapleLoan.sol"]
-        },
-        "contracts/MapleLoanFactory.sol": {
-            "urls": ["contracts/MapleLoanFactory.sol"]
-        },
-        "contracts/MapleLoanInitializer.sol": {
-            "urls": ["contracts/MapleLoanInitializer.sol"]
+        "contracts/MapleProxyFactory.sol": {
+            "urls": ["contracts/MapleProxyFactory.sol"]
         }
     },
     "settings": {
