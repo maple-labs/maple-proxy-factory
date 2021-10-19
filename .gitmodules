@@ -1,0 +1,6 @@
+[submodule "modules/proxy-factory"]
+	path = modules/proxy-factory
+	url = git@github.com:maple-labs/proxy-factory.git
+[submodule "modules/contract-test-utils"]
+	path = modules/contract-test-utils
+	url = git@github.com:maple-labs/contract-test-utils.git

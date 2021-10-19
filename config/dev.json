@@ -1,0 +1,31 @@
+{
+    "language": "Solidity",
+    "sources": {
+        "contracts/MapleProxyFactory.sol": {
+            "urls": ["contracts/MapleProxyFactory.sol"]
+        },
+        "contracts/test/MapleProxyFactory.t.sol": {
+            "urls": ["contracts/test/MapleProxyFactory.t.sol"]
+        }
+    },
+    "settings": {
+        "optimizer": {
+            "enabled": false
+        },
+        "outputSelection": {
+            "*": {
+                "*": [
+                    "abi",
+                    "metadata",
+                    "evm.bytecode",
+                    "evm.deployedBytecode",
+                    "evm.gasEstimates"
+                ],
+                "": ["ast"]
+            }
+        },
+        "metadata": {
+            "bytecodeHash": "none"
+        }
+    }
+}
