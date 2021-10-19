@@ -1,0 +1,52 @@
+{
+    "language": "Solidity",
+    "sources": {
+        "contracts/MapleLoan.sol": {
+            "urls": ["contracts/MapleLoan.sol"]
+        },
+        "contracts/MapleLoanFactory.sol": {
+            "urls": ["contracts/MapleLoanFactory.sol"]
+        },
+        "contracts/MapleLoanInitializer.sol": {
+            "urls": ["contracts/MapleLoanInitializer.sol"]
+        },
+        "contracts/Refinancer.sol": {
+            "urls": ["contracts/Refinancer.sol"]
+        },
+        "contracts/test/LoanPrimitive.t.sol": {
+            "urls": ["contracts/test/LoanPrimitive.t.sol"]
+        },
+        "contracts/test/MapleLoanStories.t.sol": {
+            "urls": ["contracts/test/MapleLoanStories.t.sol"]
+        },
+        "contracts/test/MapleLoanFactory.t.sol": {
+            "urls": ["contracts/test/MapleLoanFactory.t.sol"]
+        },
+        "contracts/test/Payments.t.sol": {
+            "urls": ["contracts/test/Payments.t.sol"]
+        },
+        "contracts/test/Refinancer.t.sol": {
+            "urls": ["contracts/test/Refinancer.t.sol"]
+        }
+    },
+    "settings": {
+        "optimizer": {
+            "enabled": false
+        },
+        "outputSelection": {
+            "*": {
+                "*": [
+                    "abi",
+                    "metadata",
+                    "evm.bytecode",
+                    "evm.deployedBytecode",
+                    "evm.gasEstimates"
+                ],
+                "": ["ast"]
+            }
+        },
+        "metadata": {
+            "bytecodeHash": "none"
+        }
+    }
+}

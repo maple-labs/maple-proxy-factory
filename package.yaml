@@ -1,0 +1,4 @@
+name: loan
+version: 2.0.0
+source: contracts
+customDescription: Loan Artifacts and ABIs

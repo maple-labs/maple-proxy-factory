@@ -1,0 +1,3 @@
+[submodule "modules/proxy-factory"]
+	path = modules/proxy-factory
+	url = git@github.com:maple-labs/proxy-factory.git
