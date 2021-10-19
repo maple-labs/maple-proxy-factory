@@ -152,5 +152,4 @@ contract MapleProxyFactoryTest is TestUtils {
         assertEq(factory.versionOf(instance.implementation()), 2);
     }
 
-
 }

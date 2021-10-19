@@ -3,7 +3,7 @@ pragma solidity ^0.8.7;
 
 import { IProxied } from "../../modules/proxy-factory/contracts/interfaces/IProxied.sol";
 
-//// @title MapleProxied facilitates the creation of the maple contracts as proxies.
+/// @title MapleProxied facilitates the creation of the maple contracts as proxies.
 interface IMapleProxied is IProxied {
 
     /**
@@ -13,4 +13,5 @@ interface IMapleProxied is IProxied {
      *  @param  arguments_ Some encoded arguments to use for the upgrade.
      */
     function upgrade(uint256 toVersion_, bytes calldata arguments_) external;
+    
 }

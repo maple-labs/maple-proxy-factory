@@ -16,7 +16,6 @@ contract MapleGlobalsMock {
 
 }
 
-
 contract MapleInstanceMock is IMapleProxied, Proxied {
 
     function upgrade(uint256 toVersion_, bytes calldata arguments_) override external {
@@ -38,6 +37,5 @@ contract MapleInstanceMock is IMapleProxied, Proxied {
     function implementation() external view override returns (address implementation_) {
         return _implementation();
     }
-
 
 }

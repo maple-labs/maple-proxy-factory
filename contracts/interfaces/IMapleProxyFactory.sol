@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.7;
 
-//// @title MapleProxyFactory facilitates the creation of the maple contracts as proxies.
+/// @title MapleProxyFactory facilitates the creation of the maple contracts as proxies.
 interface IMapleProxyFactory {
 
     /**************/
@@ -26,13 +26,13 @@ interface IMapleProxyFactory {
      *  @dev   A proxy contract was deployed with some initialization arguments.
      *  @param version                 The version of implementation being proxied by the deployed proxy contract.
      *  @param instance                The address of  proxy contract deployed.
-     *  @param initializationArguments The arguments used to initialize  proxy contract, if any.
+     *  @param initializationArguments The arguments used to initialize proxy contract, if any.
      */
     event InstanceDeployed(uint256 indexed version, address indexed instance, bytes initializationArguments);
 
     /**
      *  @dev   A instance has upgraded by proxying to a new implementation version, with some migration arguments.
-     *  @param instance           The address of  proxy contract.
+     *  @param instance           The address of proxy contract.
      *  @param fromVersion        The initial version of the contract.
      *  @param toVersion          The version that the contract was upgraded to.
      *  @param migrationArguments The arguments used to migrate, if any.
@@ -113,7 +113,7 @@ interface IMapleProxyFactory {
     function disableUpgradePath(uint256 fromVersion_, uint256 toVersion_) external;
 
     /**
-     *  @dev   Registers the address of a implementation contract as a version, with an optional initializer.
+     *  @dev   Registers the address of an implementation contract as a version, with an optional initializer.
      *  @dev   Only the Governor can call this function.
      *  @param version_               The version to register.
      *  @param implementationAddress_ The address of the implementation.
@@ -140,8 +140,8 @@ interface IMapleProxyFactory {
     /**********************/
 
     /**
-     *  @dev   Returns the address of a implementation version.
-     *  @param  version_         version.
+     *  @dev    Returns the address of a implementation version.
+     *  @param  version_         version identifier.
      *  @return implementation_ The address of the implementation.
      */
     function implementationOf(uint256 version_) external view returns (address implementation_);
@@ -156,8 +156,8 @@ interface IMapleProxyFactory {
     /**
      *  @dev    Returns the address of Migrator contract for a migration path (from version to version).
      *  @dev    If oldVersion_ == newVersion_, Migrator is a initializer.
-     *  @param  oldVersion_  version.
-     *  @param  newVersion_  version.
+     *  @param  oldVersion_ old version.
+     *  @param  newVersion_ new version.
      *  @return migrator_   The address of a migrator contract.
      */
     function migratorForPath(uint256 oldVersion_, uint256 newVersion_) external view returns (address migrator_);
@@ -165,7 +165,7 @@ interface IMapleProxyFactory {
     /**
      *  @dev    Returns the version of a implementation contract.
      *  @param  implementation_ The address of a implementation contract.
-     *  @return version_         version of  implementation contract.
+     *  @return version_        version of  implementation contract.
      */
     function versionOf(address implementation_) external view returns (uint256 version_);
 
