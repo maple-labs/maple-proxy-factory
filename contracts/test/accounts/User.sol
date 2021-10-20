@@ -10,7 +10,7 @@ contract User {
     /*** Direct Functions ***/
     /************************/
 
-    function instance_upgrade(address instance_, uint256 toVersion_, bytes calldata arguments_) external {
+    function mapleProxied_upgrade(address instance_, uint256 toVersion_, bytes calldata arguments_) external {
         IMapleProxied(instance_).upgrade(toVersion_, arguments_);
     }
 
@@ -22,7 +22,7 @@ contract User {
     /*** Try Functions ***/
     /*********************/
 
-    function try_instance_upgrade(address instance_, uint256 toVersion_, bytes calldata arguments_) external returns (bool ok_) {
+    function try_mapleProxied_upgrade(address instance_, uint256 toVersion_, bytes calldata arguments_) external returns (bool ok_) {
         ( ok_, ) = instance_.call(abi.encodeWithSelector(IMapleProxied.upgrade.selector, toVersion_, arguments_));
     }
 

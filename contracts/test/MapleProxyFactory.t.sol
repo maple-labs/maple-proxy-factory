@@ -139,14 +139,14 @@ contract MapleProxyFactoryTest is TestUtils {
         assertEq(instance.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance.implementation()), 1);
 
-        assertTrue(!user.try_instance_upgrade(address(instance), 2, new bytes(0)), "Should fail: upgrade path not enabled");
+        assertTrue(!user.try_mapleProxied_upgrade(address(instance), 2, new bytes(0)), "Should fail: upgrade path not enabled");
 
         governor.mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(0));
 
-        assertTrue(!user.try_instance_upgrade(address(instance), 0, new bytes(0)), "Should fail: invalid version");
-        assertTrue(!user.try_instance_upgrade(address(instance), 1, new bytes(0)), "Should fail: same version");
-        assertTrue(!user.try_instance_upgrade(address(instance), 3, new bytes(0)), "Should fail: non-existent version");
-        assertTrue( user.try_instance_upgrade(address(instance), 2, new bytes(0)), "Should succeed");
+        assertTrue(!user.try_mapleProxied_upgrade(address(instance), 0, new bytes(0)), "Should fail: invalid version");
+        assertTrue(!user.try_mapleProxied_upgrade(address(instance), 1, new bytes(0)), "Should fail: same version");
+        assertTrue(!user.try_mapleProxied_upgrade(address(instance), 3, new bytes(0)), "Should fail: non-existent version");
+        assertTrue( user.try_mapleProxied_upgrade(address(instance), 2, new bytes(0)), "Should succeed");
 
         assertEq(instance.implementation(),                    address(implementation2));
         assertEq(factory.versionOf(instance.implementation()), 2);

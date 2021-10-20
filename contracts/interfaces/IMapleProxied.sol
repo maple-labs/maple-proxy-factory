@@ -13,5 +13,5 @@ interface IMapleProxied is IProxied {
      *  @param  arguments_ Some encoded arguments to use for the upgrade.
      */
     function upgrade(uint256 toVersion_, bytes calldata arguments_) external;
-    
+
 }

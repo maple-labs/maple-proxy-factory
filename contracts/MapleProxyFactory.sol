@@ -8,7 +8,7 @@ import { IMapleGlobalsLike } from "./interfaces/Interfaces.sol";
 
 import { IMapleProxyFactory } from "./interfaces/IMapleProxyFactory.sol";
 
-/// @title MapleInstanceFactory facilitates the creation of the MapleInstance contracts as proxies.
+/// @title MapleProxyFactory facilitates the creation of instances of Maple proxy contracts.
 contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     address public override mapleGlobals;
@@ -23,46 +23,47 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         mapleGlobals = mapleGlobals_;
     }
 
+    modifier onlyGovernor() {
+        require(msg.sender == IMapleGlobalsLike(mapleGlobals).governor(), "MPF:NOT_GOVERNOR");
+        _;
+    }
+
     /********************************/
     /*** Administrative Functions ***/
     /********************************/
 
-    function disableUpgradePath(uint256 fromVersion_, uint256 toVersion_) override external {
-        require(_isGovernor(msg.sender),                                   "MPF:DUP:NOT_GOVERNOR");
+    function disableUpgradePath(uint256 fromVersion_, uint256 toVersion_) override external onlyGovernor {
         require(fromVersion_ != toVersion_,                              "MPF:DUP:CANNOT_OVERWRITE_INITIALIZER");
         require(_registerMigrator(fromVersion_, toVersion_, address(0)), "MPF:DUP:FAILED");
 
         upgradeEnabledForPath[fromVersion_][toVersion_] = false;
+
         emit UpgradePathDisabled(fromVersion_, toVersion_);
     }
 
-    function enableUpgradePath(uint256 fromVersion_, uint256 toVersion_, address migrator_) override external {
-        require(_isGovernor(msg.sender),                                   "MPF:EUP:NOT_GOVERNOR");
-        require(fromVersion_ != toVersion_,                              "MPF:EUP:CANNOT_OVERWRITE_INITIALIZER");
+    function enableUpgradePath(uint256 fromVersion_, uint256 toVersion_, address migrator_) override external onlyGovernor {
+        require(fromVersion_ != toVersion_,                             "MPF:EUP:CANNOT_OVERWRITE_INITIALIZER");
         require(_registerMigrator(fromVersion_, toVersion_, migrator_), "MPF:EUP:FAILED");
 
         upgradeEnabledForPath[fromVersion_][toVersion_] = true;
+
         emit UpgradePathEnabled(fromVersion_, toVersion_, migrator_);
     }
 
-    function registerImplementation(uint256 version_, address implementationAddress_, address initializer_) override external {
-        require(_isGovernor(msg.sender), "MPF:RI:NOT_GOVERNOR");
-
+    function registerImplementation(uint256 version_, address implementationAddress_, address initializer_) override external onlyGovernor {
         // Version 0 reserved as "no version" since default `defaultVersion` is 0.
-        require(version_ != uint256(0),                                     "MPF:RI:INVALID_VERSION");
+        require(version_ != uint256(0),                                    "MPF:RI:INVALID_VERSION");
         require(_registerImplementation(version_, implementationAddress_), "MPF:RI:FAIL_FOR_IMPLEMENTATION");
 
         // Set migrator for initialization, which understood as fromVersion == toVersion.
         require(_registerMigrator(version_, version_, initializer_), "MPF:RI:FAIL_FOR_MIGRATOR");
 
-        // Updating the current version so new instancr always created with the same version and emits event.
+        // Updating the current version so new instance always created with the same version and emits event.
         emit ImplementationRegistered(version_, implementationAddress_, initializer_);
     }
 
-    function setDefaultVersion(uint256 version_) override external {
-        require(_isGovernor(msg.sender), "MPF:SDV:NOT_GOVERNOR");
-
-        // Version must be 0 (to disable creating new instances) or be registered
+    function setDefaultVersion(uint256 version_) override external onlyGovernor {
+        // Version must be 0 (to disable creating new instances) or be registered.
         require(version_ == 0 || _implementationOf[version_] != address(0), "MPF:SDV:INVALID_VERSION");
 
         emit DefaultVersionSet(defaultVersion = version_);
@@ -80,7 +81,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         emit InstanceDeployed(defaultVersion, instance_, arguments_);
     }
 
-    // NOTE: The MapleInstance implementation of MapleInstance proxy contract defines the access control logic for its own upgrade.
+    // NOTE: The implementation proxied by the instance defines the access control logic for its own upgrade.
     function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) override external {
         uint256 fromVersion_ = _versionOf[IProxied(msg.sender).implementation()];
 
@@ -108,14 +109,6 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     function versionOf(address implementation_) override external view returns (uint256 version_) {
         return _versionOf[implementation_];
-    }
-
-    /**************************/
-    /*** Internal Functions ***/
-    /**************************/
-
-    function _isGovernor(address governor_) internal view returns (bool isGovernor_) {
-        return governor_ == IMapleGlobalsLike(mapleGlobals).governor();
     }
 
 }
