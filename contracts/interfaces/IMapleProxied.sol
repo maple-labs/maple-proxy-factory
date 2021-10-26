@@ -3,7 +3,7 @@ pragma solidity ^0.8.7;
 
 import { IProxied } from "../../modules/proxy-factory/contracts/interfaces/IProxied.sol";
 
-/// @title MapleProxied facilitates the creation of the maple contracts as proxies.
+/// @title A Maple implementation that is to be proxied, must implement IMapleProxied.
 interface IMapleProxied is IProxied {
 
     /**
