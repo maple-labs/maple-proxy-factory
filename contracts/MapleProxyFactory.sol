@@ -8,7 +8,7 @@ import { IMapleGlobalsLike } from "./interfaces/Interfaces.sol";
 
 import { IMapleProxyFactory } from "./interfaces/IMapleProxyFactory.sol";
 
-/// @title MapleProxyFactory facilitates the creation of instances of Maple proxy contracts.
+/// @title A Maple factory for Proxy contracts that proxy MapleProxied implementations.
 contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     address public override mapleGlobals;
