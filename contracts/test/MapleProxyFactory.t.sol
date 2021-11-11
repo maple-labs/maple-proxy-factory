@@ -77,15 +77,11 @@ contract MapleProxyFactoryTest is TestUtils {
 
         MapleInstanceMock instance1 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
 
-        assertTrue(factory.isInstance(address(instance1)));
-
         assertEq(instance1.factory(),                           address(factory));
         assertEq(instance1.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance1.implementation()), 1);
 
         MapleInstanceMock instance2 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
-
-        assertTrue(factory.isInstance(address(instance2)));
 
         assertEq(instance2.factory(),                           address(factory));
         assertEq(instance2.implementation(),                    address(implementation1));
