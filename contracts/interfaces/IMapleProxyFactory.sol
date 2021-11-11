@@ -147,13 +147,6 @@ interface IMapleProxyFactory {
     function implementationOf(uint256 version_) external view returns (address implementation_);
 
     /**
-     *  @dev    Returns whether a contract at an address is an instance.
-     *  @param  instance_   The address of a contract.
-     *  @return isInstance_ Whether a contract is an instance.
-     */
-    function isInstance(address instance_) external view returns (bool isInstance_);
-
-    /**
      *  @dev    Returns the address of a migrator contract for a migration path (from version, to version).
      *  @dev    If oldVersion_ == newVersion_, the migrator is a initializer.
      *  @param  oldVersion_ The old version.
