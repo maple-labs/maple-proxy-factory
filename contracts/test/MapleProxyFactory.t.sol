@@ -12,7 +12,7 @@ import { MapleGlobalsMock, MapleInstanceMock } from "./mocks/Mocks.sol";
 
 import  { MapleProxyFactory } from "../MapleProxyFactory.sol";
 
-contract MapleProxyFactoryTest is TestUtils {
+contract MapleProxyFactoryTests is TestUtils {
 
     Governor             internal governor;
     Governor             internal notGovernor;
