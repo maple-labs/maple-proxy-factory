@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.7;
 
-import { Proxied } from "../../../modules/proxy-factory/contracts/Proxied.sol";
-
 import { IMapleProxyFactory } from "../../interfaces/IMapleProxyFactory.sol";
 import { IMapleProxied }      from "../../interfaces/IMapleProxied.sol";
+
+import { MapleProxied } from "../../MapleProxied.sol";
 
 contract MapleGlobalsMock {
 
@@ -16,7 +16,7 @@ contract MapleGlobalsMock {
 
 }
 
-contract MapleInstanceMock is IMapleProxied, Proxied {
+contract MapleInstanceMock is IMapleProxied, MapleProxied {
 
     function upgrade(uint256 toVersion_, bytes calldata arguments_) override external {
         IMapleProxyFactory(_factory()).upgradeInstance(toVersion_, arguments_);
@@ -39,3 +39,5 @@ contract MapleInstanceMock is IMapleProxied, Proxied {
     }
 
 }
+
+contract EmptyContact {}

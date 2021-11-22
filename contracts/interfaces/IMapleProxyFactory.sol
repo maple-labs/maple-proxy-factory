@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import { IDefaultImplementationBeacon } from "../../modules/proxy-factory/contracts/interfaces/IDefaultImplementationBeacon.sol";
+
 /// @title A Maple factory for Proxy contracts that proxy MapleProxied implementations.
-interface IMapleProxyFactory {
+interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**************/
     /*** Events ***/
@@ -69,13 +71,6 @@ interface IMapleProxyFactory {
     function mapleGlobals() external view returns (address mapleGlobals_);
 
     /**
-     *  @dev    The nonce of an account for CREATE2 salts.
-     *  @param  account_ The address of an account.
-     *  @return nonce_   The nonce for an account.
-     */
-    function nonceOf(address account_) external view returns (uint256 nonce_);
-
-    /**
      *  @dev    Whether the upgrade is enabled for a path from a version to another version.
      *  @param  toVersion_   The initial version.
      *  @param  fromVersion_ The destination version.
@@ -91,9 +86,10 @@ interface IMapleProxyFactory {
      *  @dev    Deploys a new instance proxying the default implementation version, with some initialization arguments.
      *  @dev    Uses a nonce and `msg.sender` as a salt for the CREATE2 opcode during instantiation to produce deterministic addresses.
      *  @param  arguments_ The initialization arguments to use for the instance deployment, if any.
+     *  @param  salt_      The salt to use in the contract creation process.
      *  @return instance_  The address of the deployed proxy contract.
      */
-    function createInstance(bytes calldata arguments_) external returns (address instance_);
+    function createInstance(bytes calldata arguments_, bytes32 salt_) external returns (address instance_);
 
     /**
      *  @dev   Enables upgrading from a version to a version of an implementation, with an optional migrator.
@@ -138,6 +134,14 @@ interface IMapleProxyFactory {
     /**********************/
     /*** View Functions ***/
     /**********************/
+
+    /**
+     *  @dev    Returns the deterministic address of a potential proxy, given some arguments and salt.
+     *  @param  arguments_       The initialization arguments to be used when deploying the proxy.
+     *  @param  salt_            The salt to be used when deploying the proxy.
+     *  @return instanceAddress_ The deterministic address of a potential proxy.
+     */
+    function getInstanceAddress(bytes calldata arguments_, bytes32 salt_) external view returns (address instanceAddress_);
 
     /**
      *  @dev    Returns the address of an implementation version.
