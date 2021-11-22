@@ -14,15 +14,15 @@ import  { MapleProxyFactory } from "../MapleProxyFactory.sol";
 
 contract MapleProxyFactoryTests is TestUtils {
 
-    Governor             internal governor;
-    Governor             internal notGovernor;
-    MapleGlobalsMock     internal globals;
-    MapleProxyFactory    internal factory;
-    MapleInstanceMock    internal implementation1;
-    MapleInstanceMock    internal implementation2;
-    MockInitializerV1    internal initializerV1;
-    MockInitializerV2    internal initializerV2;
-    User                 internal user;
+    Governor          internal governor;
+    Governor          internal notGovernor;
+    MapleGlobalsMock  internal globals;
+    MapleProxyFactory internal factory;
+    MapleInstanceMock internal implementation1;
+    MapleInstanceMock internal implementation2;
+    MockInitializerV1 internal initializerV1;
+    MockInitializerV2 internal initializerV2;
+    User              internal user;
 
     function setUp() external {
         governor        = new Governor();
@@ -59,15 +59,16 @@ contract MapleProxyFactoryTests is TestUtils {
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 1), "Should succeed: set");
 
         assertEq(factory.defaultVersion(), 1, "Incorrect state of defaultVersion");
+        assertEq(factory.instanceImplementation(), address(implementation1), "Incorrect instanceImplementation");
 
         assertTrue(!notGovernor.try_mapleProxyFactory_setDefaultVersion(address(factory), 0), "Should fail: not governor");
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 0), "Should succeed: unset");
 
         assertEq(factory.defaultVersion(), 0, "Incorrect state of defaultVersion");
+        assertEq(factory.instanceImplementation(), address(0), "Incorrect instanceImplementation");
     }
 
     function test_createInstance() external {
-
         bytes memory arguments = new bytes(0);
         bytes32 salt = keccak256(abi.encodePacked("salt1"));
 
@@ -78,9 +79,10 @@ contract MapleProxyFactoryTests is TestUtils {
 
         MapleInstanceMock instance1 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
 
-        assertEq(instance1.factory(),                           address(factory));
-        assertEq(instance1.implementation(),                    address(implementation1));
-        assertEq(factory.versionOf(instance1.implementation()), 1);
+        assertEq(factory.getDeterministicInstanceAddress(arguments, salt), address(instance1));
+        assertEq(instance1.factory(),                                      address(factory));
+        assertEq(instance1.implementation(),                               address(implementation1));
+        assertEq(factory.versionOf(instance1.implementation()),            1);
 
         assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments, salt), "Should fail: reused salt");
 
@@ -88,9 +90,10 @@ contract MapleProxyFactoryTests is TestUtils {
 
         MapleInstanceMock instance2 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
 
-        assertEq(instance2.factory(),                           address(factory));
-        assertEq(instance2.implementation(),                    address(implementation1));
-        assertEq(factory.versionOf(instance2.implementation()), 1);
+        assertEq(factory.getDeterministicInstanceAddress(arguments, salt), address(instance2));
+        assertEq(instance2.factory(),                                      address(factory));
+        assertEq(instance2.implementation(),                               address(implementation1));
+        assertEq(factory.versionOf(instance2.implementation()),            1);
 
         assertTrue(address(instance1) != address(instance2), "Instances should have unique addresses");
     }

@@ -73,7 +73,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
         bool success_;
-        ( success_, instance_ ) = _newInstanceWithSalt(defaultVersion, arguments_, keccak256(abi.encodePacked(msg.sender, salt_)));
+        ( success_, instance_ ) = _newInstance(defaultVersion, arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
         require(success_, "MPF:CI:FAILED");
 
         emit InstanceDeployed(defaultVersion, instance_, arguments_);
@@ -93,11 +93,16 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     /*** View Functions ***/
     /**********************/
 
-    // TODO: Need to discuss this, its... complicated but very useful.
-    function getDeterministicInstanceAddress() public virtual {}
+    function getDeterministicInstanceAddress(bytes calldata arguments_, bytes32 salt_) public virtual returns (address instanceAddress_) {
+        return _getDeterministicProxyAddress(keccak256(abi.encodePacked(arguments_, salt_)));
+    }
 
     function implementationOf(uint256 version_) public view override virtual returns (address implementation_) {
         return _implementationOf[version_];
+    }
+
+    function instanceImplementation() external view override returns (address instanceImplementation_) {
+        return _implementationOf[defaultVersion];
     }
 
     function migratorForPath(uint256 oldVersion_, uint256 newVersion_) public view override virtual returns (address migrator_) {
