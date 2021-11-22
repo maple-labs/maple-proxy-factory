@@ -45,10 +45,9 @@ contract MapleProxyFactoryTest is TestUtils {
         assertTrue(    governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should succeed");
         assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: already registered version");
 
-        assertEq(factory.implementationOf(1),             address(implementation1), "Incorrect state of implementationOf");
-        assertEq(factory.migratorForPath(1, 1),           address(initializerV1),   "Incorrect state of migratorForPath");
-
-        assertEq(factory.versionOf(address(implementation1)), 1, "Incorrect state of versionOf");
+        assertEq(factory.implementationOf(1),                 address(implementation1), "Incorrect state of implementationOf");
+        assertEq(factory.migratorForPath(1, 1),               address(initializerV1),   "Incorrect state of migratorForPath");
+        assertEq(factory.versionOf(address(implementation1)), 1,                        "Incorrect state of versionOf");
     }
 
     function test_setDefaultVersion() external {
@@ -58,31 +57,40 @@ contract MapleProxyFactoryTest is TestUtils {
         assertTrue(   !governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 2), "Should fail: version not registered");
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 1), "Should succeed: set");
 
-        assertEq(factory.defaultVersion(), 1, "Incorrect state of defaultVersion");
+        assertEq(factory.defaultVersion(),        1,                        "Incorrect state of defaultVersion");
+        assertEq(factory.defaultImplementation(), address(implementation1), "Incorrect defaultImplementation");
 
         assertTrue(!notGovernor.try_mapleProxyFactory_setDefaultVersion(address(factory), 0), "Should fail: not governor");
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 0), "Should succeed: unset");
 
-        assertEq(factory.defaultVersion(), 0, "Incorrect state of defaultVersion");
+        assertEq(factory.defaultVersion(),        0,          "Incorrect state of defaultVersion");
+        assertEq(factory.defaultImplementation(), address(0), "Incorrect defaultImplementation");
     }
 
     function test_createInstance() external {
 
         bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt1"));
 
-        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments), "Should fail: unregistered version");
+        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments, salt), "Should fail: unregistered version");
 
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
 
-        MapleInstanceMock instance1 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
+        MapleInstanceMock instance1 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
 
+        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance1));
         assertEq(instance1.factory(),                           address(factory));
         assertEq(instance1.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance1.implementation()), 1);
 
-        MapleInstanceMock instance2 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
+        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments, salt), "Should fail: reused salt");
 
+        salt = keccak256(abi.encodePacked("salt2"));
+
+        MapleInstanceMock instance2 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
+
+        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance2));
         assertEq(instance2.factory(),                           address(factory));
         assertEq(instance2.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance2.implementation()), 1);
@@ -129,8 +137,9 @@ contract MapleProxyFactoryTest is TestUtils {
         governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
 
         bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt"));
 
-        MapleInstanceMock instance = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
+        MapleInstanceMock instance = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
 
         assertEq(instance.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance.implementation()), 1);
