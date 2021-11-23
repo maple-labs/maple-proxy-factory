@@ -40,4 +40,4 @@ contract MapleInstanceMock is IMapleProxied, MapleProxied {
 
 }
 
-contract EmptyContact {}
+contract EmptyContract {}
