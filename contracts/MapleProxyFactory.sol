@@ -36,30 +36,30 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         require(fromVersion_ != toVersion_,                              "MPF:DUP:CANNOT_OVERWRITE_INITIALIZER");
         require(_registerMigrator(fromVersion_, toVersion_, address(0)), "MPF:DUP:FAILED");
 
-        upgradeEnabledForPath[fromVersion_][toVersion_] = false;
-
         emit UpgradePathDisabled(fromVersion_, toVersion_);
+
+        upgradeEnabledForPath[fromVersion_][toVersion_] = false;
     }
 
     function enableUpgradePath(uint256 fromVersion_, uint256 toVersion_, address migrator_) public override virtual onlyGovernor {
         require(fromVersion_ != toVersion_,                             "MPF:EUP:CANNOT_OVERWRITE_INITIALIZER");
         require(_registerMigrator(fromVersion_, toVersion_, migrator_), "MPF:EUP:FAILED");
 
-        upgradeEnabledForPath[fromVersion_][toVersion_] = true;
-
         emit UpgradePathEnabled(fromVersion_, toVersion_, migrator_);
+
+        upgradeEnabledForPath[fromVersion_][toVersion_] = true;
     }
 
     function registerImplementation(uint256 version_, address implementationAddress_, address initializer_) public override virtual onlyGovernor {
         // Version 0 reserved as "no version" since default `defaultVersion` is 0.
-        require(version_ != uint256(0),                                    "MPF:RI:INVALID_VERSION");
+        require(version_ != uint256(0), "MPF:RI:INVALID_VERSION");
+
+        emit ImplementationRegistered(version_, implementationAddress_, initializer_);
+
         require(_registerImplementation(version_, implementationAddress_), "MPF:RI:FAIL_FOR_IMPLEMENTATION");
 
         // Set migrator for initialization, which understood as fromVersion == toVersion.
         require(_registerMigrator(version_, version_, initializer_), "MPF:RI:FAIL_FOR_MIGRATOR");
-
-        // Updating the current version so new instance always created with the same version and emits event.
-        emit ImplementationRegistered(version_, implementationAddress_, initializer_);
     }
 
     function setDefaultVersion(uint256 version_) public override virtual onlyGovernor {
@@ -85,10 +85,11 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) public override virtual {
         uint256 fromVersion_ = _versionOf[IProxied(msg.sender).implementation()];
 
-        require(upgradeEnabledForPath[fromVersion_][toVersion_],      "MPF:UI:NOT_ALLOWED");
-        require(_upgradeInstance(msg.sender, toVersion_, arguments_), "MPF:UI:FAILED");
+        require(upgradeEnabledForPath[fromVersion_][toVersion_], "MPF:UI:NOT_ALLOWED");
 
         emit InstanceUpgraded(msg.sender, fromVersion_, toVersion_, arguments_);
+
+        require(_upgradeInstance(msg.sender, toVersion_, arguments_), "MPF:UI:FAILED");
     }
 
     /**********************/
