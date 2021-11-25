@@ -9,9 +9,14 @@ import { IMapleProxied }      from "../../interfaces/IMapleProxied.sol";
 contract MapleGlobalsMock {
 
     address public governor;
+    bool    public protocolPaused;
 
     constructor (address governor_) {
         governor = governor_;
+    }
+
+    function setProtocolPause(bool pause_) external {
+        protocolPaused = pause_;
     }
 
 }

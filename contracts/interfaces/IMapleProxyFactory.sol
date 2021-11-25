@@ -40,6 +40,12 @@ interface IMapleProxyFactory {
     event InstanceUpgraded(address indexed instance, uint256 indexed fromVersion, uint256 indexed toVersion, bytes migrationArguments);
 
     /**
+     *  @dev   The MapleGlobals contract address was updated.
+     *  @param mapleGlobals The new mapleGlobals contract address.
+     */
+    event MapleGlobalsSet(address mapleGlobals);
+
+    /**
      *  @dev   An upgrade path was disabled, with an optional migrator contract.
      *  @param fromVersion The starting version of the upgrade path.
      *  @param toVersion   The destination version of the upgrade path.
@@ -129,6 +135,13 @@ interface IMapleProxyFactory {
     function setDefaultVersion(uint256 version_) external;
 
     /**
+     *  @dev   Sets the MapleGlobals address.
+     *  @dev   Only the Governor can call this function.
+     *  @param mapleGlobals_ The new MapleGlobals address.
+     */
+    function setMapleGlobals(address mapleGlobals_) external;
+
+    /**
      *  @dev   Upgrades the calling proxy contract's implementation, with some migration arguments.
      *  @param toVersion_ The implementation version to upgrade the proxy contract to.
      *  @param arguments_ The migration arguments, if any.
@@ -161,5 +174,11 @@ interface IMapleProxyFactory {
      *  @return version_        The version of the implementation contract.
      */
     function versionOf(address implementation_) external view returns (uint256 version_);
+
+    /**
+     *  @dev    Returns a boolean indicating if the entire protocol has been paused.
+     *  @return isPaused_ Boolean indicating if the entire protocol has been paused.
+     */
+    function isProtocolPaused() external view returns (bool isPaused_);
 
 }

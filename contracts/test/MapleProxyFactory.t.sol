@@ -33,15 +33,25 @@ contract MapleProxyFactoryTest is TestUtils {
         notGovernor     = new Governor();
         user            = new User();
 
-
         globals = new MapleGlobalsMock(address(governor));
         factory = new MapleProxyFactory(address(globals));
+    }
+
+    function _pauseProtocol() internal {
+        globals.setProtocolPause(true);
+    }
+
+    function _unpauseProtocol() internal {
+        globals.setProtocolPause(false);
     }
 
     function test_registerImplementation() external {
         assertTrue(!notGovernor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: not governor");
         assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 0, address(implementation1), address(initializerV1)), "Should fail: invalid version");
         assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(0),               address(initializerV1)), "Should fail: invalid implementation address");
+        _pauseProtocol();
+        assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: protocol pause");
+        _unpauseProtocol();
         assertTrue(    governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should succeed");
         assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: already registered version");
 
@@ -56,6 +66,9 @@ contract MapleProxyFactoryTest is TestUtils {
 
         assertTrue(!notGovernor.try_mapleProxyFactory_setDefaultVersion(address(factory), 1), "Should fail: not governor");
         assertTrue(   !governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 2), "Should fail: version not registered");
+        _pauseProtocol();
+        assertTrue(   !governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 1), "Should fail: protocol pause");
+        _unpauseProtocol();
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 1), "Should succeed: set");
 
         assertEq(factory.defaultVersion(), 1, "Incorrect state of defaultVersion");
@@ -66,11 +79,27 @@ contract MapleProxyFactoryTest is TestUtils {
         assertEq(factory.defaultVersion(), 0, "Incorrect state of defaultVersion");
     }
 
+    function test_setGlobals() external {
+
+        assertEq(factory.mapleGlobals(), address(globals));
+
+        MapleGlobalsMock newGlobals = new MapleGlobalsMock(address(governor));
+
+        assertTrue(!notGovernor.try_mapleProxyFactory_setMapleGlobals(address(factory), address(newGlobals)), "Should fail: not governor");
+        assertTrue(   !governor.try_mapleProxyFactory_setMapleGlobals(address(factory), address(user)),       "Should fail: invalid maple globals contract");
+        assertTrue(    governor.try_mapleProxyFactory_setMapleGlobals(address(factory), address(newGlobals)), "Should succeed");  // TODO: Should this use a `live` modifier?
+
+        assertEq(factory.mapleGlobals(), address(newGlobals));
+    }
+
     function test_createInstance() external {
 
         bytes memory arguments = new bytes(0);
 
         assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments), "Should fail: unregistered version");
+        _pauseProtocol();
+        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments), "Should fail: protocol pause");
+        _unpauseProtocol();
 
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
@@ -96,6 +125,9 @@ contract MapleProxyFactoryTest is TestUtils {
 
         assertTrue(!notGovernor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(444444)), "Should fail: not governor");
         assertTrue(   !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 1, address(444444)), "Should fail: overwriting initializer");
+        _pauseProtocol();
+        assertTrue(   !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(444444)), "Should fail: protocol pause");
+        _unpauseProtocol();
         assertTrue(    governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(444444)), "Should succeed: upgrade");
 
         assertEq(factory.migratorForPath(1, 2), address(444444), "Incorrect migrator");
@@ -118,6 +150,9 @@ contract MapleProxyFactoryTest is TestUtils {
 
         assertTrue(!notGovernor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 2), "Should fail: not governor");
         assertTrue(   !governor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 1), "Should fail: overwriting initializer");
+        _pauseProtocol();
+        assertTrue(   !governor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 2), "Should fail: protocol pause");
+        _unpauseProtocol();
         assertTrue(    governor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 2), "Should succeed");
 
         assertEq(factory.migratorForPath(1, 2), address(0), "Incorrect migrator");
@@ -142,6 +177,9 @@ contract MapleProxyFactoryTest is TestUtils {
         assertTrue(!user.try_mapleProxied_upgrade(address(instance), 0, new bytes(0)), "Should fail: invalid version");
         assertTrue(!user.try_mapleProxied_upgrade(address(instance), 1, new bytes(0)), "Should fail: same version");
         assertTrue(!user.try_mapleProxied_upgrade(address(instance), 3, new bytes(0)), "Should fail: non-existent version");
+        _pauseProtocol();
+        assertTrue(!user.try_mapleProxied_upgrade(address(instance), 2, new bytes(0)), "Should fail: protocol pause");
+        _unpauseProtocol();
         assertTrue( user.try_mapleProxied_upgrade(address(instance), 2, new bytes(0)), "Should succeed");
 
         assertEq(instance.implementation(),                    address(implementation2));
