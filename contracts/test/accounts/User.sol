@@ -14,8 +14,8 @@ contract User {
         IMapleProxied(instance_).upgrade(toVersion_, arguments_);
     }
 
-    function mapleProxyFactory_createInstance(address factory_, bytes calldata arguments_) external returns (address instance_) {
-        return IMapleProxyFactory(factory_).createInstance(arguments_);
+    function mapleProxyFactory_createInstance(address factory_, bytes calldata arguments_, bytes32 salt_) external returns (address instance_) {
+        return IMapleProxyFactory(factory_).createInstance(arguments_, salt_);
     }
 
     /*********************/
@@ -26,8 +26,8 @@ contract User {
         ( ok_, ) = instance_.call(abi.encodeWithSelector(IMapleProxied.upgrade.selector, toVersion_, arguments_));
     }
 
-    function try_mapleProxyFactory_createInstance(address factory_, bytes calldata arguments_) external returns (bool ok_) {
-        ( ok_, ) = factory_.call(abi.encodeWithSelector(IMapleProxyFactory.createInstance.selector, arguments_));
+    function try_mapleProxyFactory_createInstance(address factory_, bytes calldata arguments_, bytes32 salt_) external returns (bool ok_) {
+        ( ok_, ) = factory_.call(abi.encodeWithSelector(IMapleProxyFactory.createInstance.selector, arguments_, salt_));
     }
 
 }
