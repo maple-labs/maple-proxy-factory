@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.7;
 
-import { IProxied } from "../modules/proxy-factory/contracts/interfaces/IProxied.sol";
-
+import { IProxied }     from "../modules/proxy-factory/contracts/interfaces/IProxied.sol";
 import { ProxyFactory } from "../modules/proxy-factory/contracts/ProxyFactory.sol";
 
 import { IMapleProxyFactory } from "./interfaces/IMapleProxyFactory.sol";
