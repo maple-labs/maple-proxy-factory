@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.7;
 
-import { TestUtils } from "../../modules/contract-test-utils/contracts/test.sol";
-
+import { TestUtils }                            from "../../modules/contract-test-utils/contracts/test.sol";
 import { MockInitializerV1, MockInitializerV2 } from "../../modules/proxy-factory/contracts/test/mocks/Mocks.sol";
 
 import { Governor } from "./accounts/Governor.sol";
 import { User }     from "./accounts/User.sol";
 
-import { MapleGlobalsMock, MapleInstanceMock } from "./mocks/Mocks.sol";
+import { MapleGlobalsMock, MapleInstanceMock, EmptyContact } from "./mocks/Mocks.sol";
 
-import  { MapleProxyFactory } from "../MapleProxyFactory.sol";
+import { MapleProxyFactory } from "../MapleProxyFactory.sol";
 
-contract MapleProxyFactoryTest is TestUtils {
+contract MapleProxyFactoryTests is TestUtils {
 
     Governor             internal governor;
     Governor             internal notGovernor;
@@ -45,10 +44,9 @@ contract MapleProxyFactoryTest is TestUtils {
         assertTrue(    governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should succeed");
         assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: already registered version");
 
-        assertEq(factory.implementationOf(1),             address(implementation1), "Incorrect state of implementationOf");
-        assertEq(factory.migratorForPath(1, 1),           address(initializerV1),   "Incorrect state of migratorForPath");
-
-        assertEq(factory.versionOf(address(implementation1)), 1, "Incorrect state of versionOf");
+        assertEq(factory.implementationOf(1),                 address(implementation1), "Incorrect state of implementationOf");
+        assertEq(factory.migratorForPath(1, 1),               address(initializerV1),   "Incorrect state of migratorForPath");
+        assertEq(factory.versionOf(address(implementation1)), 1,                        "Incorrect state of versionOf");
     }
 
     function test_setDefaultVersion() external {
@@ -58,31 +56,40 @@ contract MapleProxyFactoryTest is TestUtils {
         assertTrue(   !governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 2), "Should fail: version not registered");
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 1), "Should succeed: set");
 
-        assertEq(factory.defaultVersion(), 1, "Incorrect state of defaultVersion");
+        assertEq(factory.defaultVersion(),        1,                        "Incorrect state of defaultVersion");
+        assertEq(factory.defaultImplementation(), address(implementation1), "Incorrect defaultImplementation");
 
         assertTrue(!notGovernor.try_mapleProxyFactory_setDefaultVersion(address(factory), 0), "Should fail: not governor");
         assertTrue(    governor.try_mapleProxyFactory_setDefaultVersion(address(factory), 0), "Should succeed: unset");
 
-        assertEq(factory.defaultVersion(), 0, "Incorrect state of defaultVersion");
+        assertEq(factory.defaultVersion(),        0,          "Incorrect state of defaultVersion");
+        assertEq(factory.defaultImplementation(), address(0), "Incorrect defaultImplementation");
     }
 
     function test_createInstance() external {
 
         bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt1"));
 
-        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments), "Should fail: unregistered version");
+        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments, salt), "Should fail: unregistered version");
 
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
 
-        MapleInstanceMock instance1 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
+        MapleInstanceMock instance1 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
 
+        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance1));
         assertEq(instance1.factory(),                           address(factory));
         assertEq(instance1.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance1.implementation()), 1);
 
-        MapleInstanceMock instance2 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
+        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments, salt), "Should fail: reused salt");
 
+        salt = keccak256(abi.encodePacked("salt2"));
+
+        MapleInstanceMock instance2 = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
+
+        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance2));
         assertEq(instance2.factory(),                           address(factory));
         assertEq(instance2.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance2.implementation()), 1);
@@ -94,27 +101,32 @@ contract MapleProxyFactoryTest is TestUtils {
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_registerImplementation(address(factory), 2, address(implementation2), address(initializerV2));
 
-        assertTrue(!notGovernor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(444444)), "Should fail: not governor");
-        assertTrue(   !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 1, address(444444)), "Should fail: overwriting initializer");
-        assertTrue(    governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(444444)), "Should succeed: upgrade");
+        address migrator = address(new EmptyContact());
 
-        assertEq(factory.migratorForPath(1, 2), address(444444), "Incorrect migrator");
+        assertTrue(!notGovernor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should fail: not governor");
+        assertTrue(   !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 1, migrator), "Should fail: overwriting initializer");
+        assertTrue(    governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should succeed: upgrade");
 
-        assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 2, 1, address(555555)), "Should succeed: downgrade");
+        assertEq(factory.migratorForPath(1, 2), migrator, "Incorrect migrator");
 
-        assertEq(factory.migratorForPath(2, 1), address(555555), "Incorrect migrator");
+        assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 2, 1, migrator), "Should succeed: downgrade");
 
-        assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(888888)), "Should succeed: change migrator");
+        assertEq(factory.migratorForPath(2, 1), migrator, "Incorrect migrator");
 
-        assertEq(factory.migratorForPath(1, 2), address(888888), "Incorrect migrator");
+        assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should succeed: change migrator");
+
+        assertEq(factory.migratorForPath(1, 2), migrator, "Incorrect migrator");
     }
 
     function test_disableUpgradePath() external {
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_registerImplementation(address(factory), 2, address(implementation2), address(initializerV2));
-        governor.mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(444444));
 
-        assertEq(factory.migratorForPath(1, 2), address(444444), "Incorrect migrator");
+        address migrator = address(new EmptyContact());
+
+        governor.mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator);
+
+        assertEq(factory.migratorForPath(1, 2), migrator, "Incorrect migrator");
 
         assertTrue(!notGovernor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 2), "Should fail: not governor");
         assertTrue(   !governor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 1), "Should fail: overwriting initializer");
@@ -129,8 +141,9 @@ contract MapleProxyFactoryTest is TestUtils {
         governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
 
         bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt"));
 
-        MapleInstanceMock instance = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments));
+        MapleInstanceMock instance = MapleInstanceMock(user.mapleProxyFactory_createInstance(address(factory), arguments, salt));
 
         assertEq(instance.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance.implementation()), 1);

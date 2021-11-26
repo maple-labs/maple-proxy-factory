@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.7;
 
-import { ProxyFactory } from "../modules/proxy-factory/contracts/ProxyFactory.sol";
 import { IProxied }     from "../modules/proxy-factory/contracts/interfaces/IProxied.sol";
-
-import { IMapleGlobalsLike } from "./interfaces/Interfaces.sol";
+import { ProxyFactory } from "../modules/proxy-factory/contracts/ProxyFactory.sol";
 
 import { IMapleProxyFactory } from "./interfaces/IMapleProxyFactory.sol";
+import { IMapleGlobalsLike }  from "./interfaces/Interfaces.sol";
 
 /// @title A Maple factory for Proxy contracts that proxy MapleProxied implementations.
 contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
@@ -14,8 +13,6 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     address public override mapleGlobals;
 
     uint256 public override defaultVersion;
-
-    mapping(address => uint256) public override nonceOf;
 
     mapping(uint256 => mapping(uint256 => bool)) public override upgradeEnabledForPath;
 
@@ -73,9 +70,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     /*** Instance Functions ***/
     /***************++++*******/
 
-    function createInstance(bytes calldata arguments_) public override virtual returns (address instance_) {
+    function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
         bool success_;
-        ( success_, instance_ ) = _newInstanceWithSalt(defaultVersion, arguments_, keccak256(abi.encodePacked(msg.sender, nonceOf[msg.sender]++)));
+        ( success_, instance_ ) = _newInstance(defaultVersion, arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
         require(success_, "MPF:CI:FAILED");
 
         emit InstanceDeployed(defaultVersion, instance_, arguments_);
@@ -95,8 +92,16 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     /*** View Functions ***/
     /**********************/
 
+    function getInstanceAddress(bytes calldata arguments_, bytes32 salt_) public view override virtual returns (address instanceAddress_) {
+        return _getDeterministicProxyAddress(keccak256(abi.encodePacked(arguments_, salt_)));
+    }
+
     function implementationOf(uint256 version_) public view override virtual returns (address implementation_) {
         return _implementationOf[version_];
+    }
+
+    function defaultImplementation() external view override returns (address defaultImplementation_) {
+        return _implementationOf[defaultVersion];
     }
 
     function migratorForPath(uint256 oldVersion_, uint256 newVersion_) public view override virtual returns (address migrator_) {
