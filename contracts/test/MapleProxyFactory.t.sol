@@ -7,7 +7,7 @@ import { MockInitializerV1, MockInitializerV2 } from "../../modules/proxy-factor
 import { Governor } from "./accounts/Governor.sol";
 import { User }     from "./accounts/User.sol";
 
-import { MapleGlobalsMock, MapleInstanceMock, EmptyContact } from "./mocks/Mocks.sol";
+import { MapleGlobalsMock, MapleInstanceMock, EmptyContract } from "./mocks/Mocks.sol";
 
 import { MapleProxyFactory } from "../MapleProxyFactory.sol";
 
@@ -101,7 +101,7 @@ contract MapleProxyFactoryTests is TestUtils {
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_registerImplementation(address(factory), 2, address(implementation2), address(initializerV2));
 
-        address migrator = address(new EmptyContact());
+        address migrator = address(new EmptyContract());
 
         assertTrue(!notGovernor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should fail: not governor");
         assertTrue(   !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 1, migrator), "Should fail: overwriting initializer");
@@ -109,9 +109,13 @@ contract MapleProxyFactoryTests is TestUtils {
 
         assertEq(factory.migratorForPath(1, 2), migrator, "Incorrect migrator");
 
+        migrator = address(new EmptyContract());
+
         assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 2, 1, migrator), "Should succeed: downgrade");
 
         assertEq(factory.migratorForPath(2, 1), migrator, "Incorrect migrator");
+
+        migrator = address(new EmptyContract());
 
         assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should succeed: change migrator");
 
@@ -122,7 +126,7 @@ contract MapleProxyFactoryTests is TestUtils {
         governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
         governor.mapleProxyFactory_registerImplementation(address(factory), 2, address(implementation2), address(initializerV2));
 
-        address migrator = address(new EmptyContact());
+        address migrator = address(new EmptyContract());
 
         governor.mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator);
 
