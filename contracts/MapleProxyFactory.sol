@@ -17,7 +17,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     mapping(uint256 => mapping(uint256 => bool)) public override upgradeEnabledForPath;
 
     constructor(address mapleGlobals_) {
-       require(IMapleGlobalsLike(mapleGlobals = mapleGlobals_).governor() != address(0), "MPF:C:INVALID_GLOBALS");
+        require(IMapleGlobalsLike(mapleGlobals = mapleGlobals_).governor() != address(0), "MPF:C:INVALID_GLOBALS");
     }
 
     modifier onlyGovernor() {
@@ -72,7 +72,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
         bool success;
-        ( success, instance_ ) = _newInstance(defaultVersion, arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
+        ( success, instance_ ) = _newInstance(arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
         require(success, "MPF:CI:FAILED");
 
         emit InstanceDeployed(defaultVersion, instance_, arguments_);
