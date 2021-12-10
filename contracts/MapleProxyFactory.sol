@@ -30,7 +30,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     /********************************/
 
     function disableUpgradePath(uint256 fromVersion_, uint256 toVersion_) public override virtual onlyGovernor {
-        require(fromVersion_ != toVersion_,                              "MPF:DUP:CANNOT_OVERWRITE_INITIALIZER");
+        require(fromVersion_ != toVersion_,                              "MPF:DUP:OVERWRITING_INITIALIZER");
         require(_registerMigrator(fromVersion_, toVersion_, address(0)), "MPF:DUP:FAILED");
 
         emit UpgradePathDisabled(fromVersion_, toVersion_);
@@ -39,7 +39,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     }
 
     function enableUpgradePath(uint256 fromVersion_, uint256 toVersion_, address migrator_) public override virtual onlyGovernor {
-        require(fromVersion_ != toVersion_,                             "MPF:EUP:CANNOT_OVERWRITE_INITIALIZER");
+        require(fromVersion_ != toVersion_,                             "MPF:EUP:OVERWRITING_INITIALIZER");
         require(_registerMigrator(fromVersion_, toVersion_, migrator_), "MPF:EUP:FAILED");
 
         emit UpgradePathEnabled(fromVersion_, toVersion_, migrator_);
