@@ -11,6 +11,24 @@ import { MapleGlobalsMock, MapleInstanceMock, EmptyContract } from "./mocks/Mock
 
 import { MapleProxyFactory } from "../MapleProxyFactory.sol";
 
+contract MapleProxyFactoryConstructorTests is TestUtils {
+
+    function test_constructor() external {
+        try new MapleProxyFactory(address(1)) { assertTrue(false, "Able to instantiate with non-contract"); } catch { }
+
+        EmptyContract fakeContract = new EmptyContract();
+
+        try new MapleProxyFactory(address(fakeContract)) { assertTrue(false, "Able to instantiate with non-globals"); } catch { }
+
+        MapleGlobalsMock globals = new MapleGlobalsMock(address(this));
+
+        MapleProxyFactory factory = new MapleProxyFactory(address(globals));
+
+        assertEq(factory.mapleGlobals(), address(globals));
+    }
+
+}
+
 contract MapleProxyFactoryTests is TestUtils {
 
     Governor             internal governor;

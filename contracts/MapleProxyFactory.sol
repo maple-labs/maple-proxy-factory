@@ -17,7 +17,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     mapping(uint256 => mapping(uint256 => bool)) public override upgradeEnabledForPath;
 
     constructor(address mapleGlobals_) {
-        mapleGlobals = mapleGlobals_;
+       require(IMapleGlobalsLike(mapleGlobals = mapleGlobals_).governor() != address(0), "MPF:C:INVALID_GLOBALS");
     }
 
     modifier onlyGovernor() {
