@@ -8,7 +8,7 @@ interface IMapleProxied is IProxied {
 
     /**
      *  @dev   The instance was upgraded.
-     *  @param toVersion_ The new version ot the loan.
+     *  @param toVersion_ The new version of the loan.
      *  @param arguments_ The upgrade arguments, if any.
      */
     event Upgraded(uint256 toVersion_, bytes arguments_);
