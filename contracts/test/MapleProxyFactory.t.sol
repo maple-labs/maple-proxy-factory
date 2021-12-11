@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.7;
+pragma solidity 0.8.7;
 
 import { TestUtils }                            from "../../modules/contract-test-utils/contracts/test.sol";
 import { MockInitializerV1, MockInitializerV2 } from "../../modules/proxy-factory/contracts/test/mocks/Mocks.sol";
