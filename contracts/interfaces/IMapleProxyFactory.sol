@@ -125,6 +125,13 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
     function setDefaultVersion(uint256 version_) external;
 
     /**
+     *  @dev   Sets the Maple Globals contract.
+     *  @dev   Only the Governor can call this function.
+     *  @param mapleGlobals_ The address of a Maple Globals contract.
+     */
+    function setGlobals(address mapleGlobals_) external;
+
+    /**
      *  @dev   Upgrades the calling proxy contract's implementation, with some migration arguments.
      *  @param toVersion_ The implementation version to upgrade the proxy contract to.
      *  @param arguments_ The migration arguments, if any.
