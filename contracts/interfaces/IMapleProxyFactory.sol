@@ -42,6 +42,12 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
     event InstanceUpgraded(address indexed instance, uint256 indexed fromVersion, uint256 indexed toVersion, bytes migrationArguments);
 
     /**
+     *  @dev   The MapleGlobals was set.
+     *  @param mapleGlobals The address of a Maple Globals contract.
+     */
+    event MapleGlobalsSet(address indexed mapleGlobals);
+
+    /**
      *  @dev   An upgrade path was disabled, with an optional migrator contract.
      *  @param fromVersion The starting version of the upgrade path.
      *  @param toVersion   The destination version of the upgrade path.
@@ -123,6 +129,13 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
      *  @param version_ The implementation version to set as the default.
      */
     function setDefaultVersion(uint256 version_) external;
+
+    /**
+     *  @dev   Sets the Maple Globals contract.
+     *  @dev   Only the Governor can call this function.
+     *  @param mapleGlobals_ The address of a Maple Globals contract.
+     */
+    function setGlobals(address mapleGlobals_) external;
 
     /**
      *  @dev   Upgrades the calling proxy contract's implementation, with some migration arguments.

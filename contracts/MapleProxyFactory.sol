@@ -66,6 +66,12 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         emit DefaultVersionSet(defaultVersion = version_);
     }
 
+    function setGlobals(address mapleGlobals_) public override virtual onlyGovernor {
+        require(IMapleGlobalsLike(mapleGlobals_).governor() != address(0), "MPF:SG:INVALID_GLOBALS");
+
+        emit MapleGlobalsSet(mapleGlobals = mapleGlobals_);
+    }
+
     /****************+++++******/
     /*** Instance Functions ***/
     /***************++++*******/

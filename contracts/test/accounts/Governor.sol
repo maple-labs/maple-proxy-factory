@@ -30,6 +30,10 @@ contract Governor {
         IMapleProxyFactory(factory_).setDefaultVersion(version_);
     }
 
+    function mapleProxyFactory_setGlobals(address factory_, address mapleGlobals_) external {
+        IMapleProxyFactory(factory_).setGlobals(mapleGlobals_);
+    }
+
     /*********************/
     /*** Try Functions ***/
     /*********************/
@@ -60,6 +64,10 @@ contract Governor {
 
     function try_mapleProxyFactory_setDefaultVersion(address factory_, uint256 version_) external returns (bool ok_) {
         ( ok_, ) = factory_.call(abi.encodeWithSelector(IMapleProxyFactory.setDefaultVersion.selector, version_));
+    }
+
+    function try_mapleProxyFactory_setGlobals(address factory_, address mapleGlobals_) external returns (bool ok_) {
+        ( ok_, ) = factory_.call(abi.encodeWithSelector(IMapleProxyFactory.setGlobals.selector, mapleGlobals_));
     }
 
 }
