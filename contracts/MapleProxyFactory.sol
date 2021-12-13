@@ -72,9 +72,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         emit MapleGlobalsSet(mapleGlobals = mapleGlobals_);
     }
 
-    /****************+++++******/
+    /**************************/
     /*** Instance Functions ***/
-    /***************++++*******/
+    /**************************/
 
     function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
         bool success;
