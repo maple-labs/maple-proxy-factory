@@ -189,6 +189,7 @@ contract MapleProxyFactoryTests is TestUtils {
 
         assertTrue(!notGovernor.try_mapleProxyFactory_setGlobals(address(factory), address(newGlobals)));
         assertTrue(   !governor.try_mapleProxyFactory_setGlobals(address(factory), address(1)));
+        assertTrue(   !governor.try_mapleProxyFactory_setGlobals(address(factory), address(new EmptyContract())));
         assertTrue(    governor.try_mapleProxyFactory_setGlobals(address(factory), address(newGlobals)));
 
         assertEq(factory.mapleGlobals(), address(newGlobals));
