@@ -50,7 +50,6 @@ contract MapleProxyFactoryTests is TestUtils {
         notGovernor     = new Governor();
         user            = new User();
 
-
         globals = new MapleGlobalsMock(address(governor));
         factory = new MapleProxyFactory(address(globals));
     }
@@ -181,6 +180,19 @@ contract MapleProxyFactoryTests is TestUtils {
 
         assertEq(instance.implementation(),                    address(implementation2));
         assertEq(factory.versionOf(instance.implementation()), 2);
+    }
+
+    function test_setGlobals() external {
+        MapleGlobalsMock newGlobals = new MapleGlobalsMock(address(governor));
+
+        assertEq(factory.mapleGlobals(), address(globals));
+
+        assertTrue(!notGovernor.try_mapleProxyFactory_setGlobals(address(factory), address(newGlobals)));
+        assertTrue(   !governor.try_mapleProxyFactory_setGlobals(address(factory), address(1)));
+        assertTrue(   !governor.try_mapleProxyFactory_setGlobals(address(factory), address(new EmptyContract())));
+        assertTrue(    governor.try_mapleProxyFactory_setGlobals(address(factory), address(newGlobals)));
+
+        assertEq(factory.mapleGlobals(), address(newGlobals));
     }
 
 }
