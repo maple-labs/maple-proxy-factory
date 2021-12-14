@@ -12,55 +12,55 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev   A default version was set.
-     *  @param version The default version.
+     *  @param version_ The default version.
      */
-    event DefaultVersionSet(uint256 indexed version);
+    event DefaultVersionSet(uint256 indexed version_);
 
     /**
      *  @dev   A version of an implementation, at some address, was registered, with an optional initializer.
-     *  @param version               The version registered.
-     *  @param implementationAddress The address of the implementation.
-     *  @param initializer           The address of the initializer, if any.
+     *  @param version_               The version registered.
+     *  @param implementationAddress_ The address of the implementation.
+     *  @param initializer_           The address of the initializer, if any.
      */
-    event ImplementationRegistered(uint256 indexed version, address indexed implementationAddress, address indexed initializer);
+    event ImplementationRegistered(uint256 indexed version_, address indexed implementationAddress_, address indexed initializer_);
 
     /**
      *  @dev   A proxy contract was deployed with some initialization arguments.
-     *  @param version                 The version of the implementation being proxied by the deployed proxy contract.
-     *  @param instance                The address of the proxy contract deployed.
-     *  @param initializationArguments The arguments used to initialize the proxy contract, if any.
+     *  @param version_                 The version of the implementation being proxied by the deployed proxy contract.
+     *  @param instance_                The address of the proxy contract deployed.
+     *  @param initializationArguments_ The arguments used to initialize the proxy contract, if any.
      */
-    event InstanceDeployed(uint256 indexed version, address indexed instance, bytes initializationArguments);
+    event InstanceDeployed(uint256 indexed version_, address indexed instance_, bytes initializationArguments_);
 
     /**
      *  @dev   A instance has upgraded by proxying to a new implementation, with some migration arguments.
-     *  @param instance           The address of the proxy contract.
-     *  @param fromVersion        The initial implementation version being proxied.
-     *  @param toVersion          The new implementation version being proxied.
-     *  @param migrationArguments The arguments used to migrate, if any.
+     *  @param instance_           The address of the proxy contract.
+     *  @param fromVersion_        The initial implementation version being proxied.
+     *  @param toVersion_          The new implementation version being proxied.
+     *  @param migrationArguments_ The arguments used to migrate, if any.
      */
-    event InstanceUpgraded(address indexed instance, uint256 indexed fromVersion, uint256 indexed toVersion, bytes migrationArguments);
+    event InstanceUpgraded(address indexed instance_, uint256 indexed fromVersion_, uint256 indexed toVersion_, bytes migrationArguments_);
 
     /**
      *  @dev   The MapleGlobals was set.
-     *  @param mapleGlobals The address of a Maple Globals contract.
+     *  @param mapleGlobals_ The address of a Maple Globals contract.
      */
-    event MapleGlobalsSet(address indexed mapleGlobals);
+    event MapleGlobalsSet(address indexed mapleGlobals_);
 
     /**
      *  @dev   An upgrade path was disabled, with an optional migrator contract.
-     *  @param fromVersion The starting version of the upgrade path.
-     *  @param toVersion   The destination version of the upgrade path.
+     *  @param fromVersion_ The starting version of the upgrade path.
+     *  @param toVersion_   The destination version of the upgrade path.
      */
-    event UpgradePathDisabled(uint256 indexed fromVersion, uint256 indexed toVersion);
+    event UpgradePathDisabled(uint256 indexed fromVersion_, uint256 indexed toVersion_);
 
     /**
      *  @dev   An upgrade path was enabled, with an optional migrator contract.
-     *  @param fromVersion The starting version of the upgrade path.
-     *  @param toVersion   The destination version of the upgrade path.
-     *  @param migrator    The address of the migrator, if any.
+     *  @param fromVersion_ The starting version of the upgrade path.
+     *  @param toVersion_   The destination version of the upgrade path.
+     *  @param migrator_    The address of the migrator, if any.
      */
-    event UpgradePathEnabled(uint256 indexed fromVersion, uint256 indexed toVersion, address indexed migrator);
+    event UpgradePathEnabled(uint256 indexed fromVersion_, uint256 indexed toVersion_, address indexed migrator_);
 
     /***********************/
     /*** State Variables ***/

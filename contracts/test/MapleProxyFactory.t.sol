@@ -7,7 +7,7 @@ import { MockInitializerV1, MockInitializerV2 } from "../../modules/proxy-factor
 import { Governor } from "./accounts/Governor.sol";
 import { User }     from "./accounts/User.sol";
 
-import { MapleGlobalsMock, MapleInstanceMock, EmptyContract } from "./mocks/Mocks.sol";
+import { EmptyContract, MapleGlobalsMock, MapleInstanceMock } from "./mocks/Mocks.sol";
 
 import { MapleProxyFactory } from "../MapleProxyFactory.sol";
 
