@@ -86,11 +86,11 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     // NOTE: The implementation proxied by the instance defines the access control logic for its own upgrade.
     function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) public override virtual {
-        uint256 fromVersion_ = _versionOf[IProxied(msg.sender).implementation()];
+        uint256 fromVersion = _versionOf[IProxied(msg.sender).implementation()];
 
-        require(upgradeEnabledForPath[fromVersion_][toVersion_], "MPF:UI:NOT_ALLOWED");
+        require(upgradeEnabledForPath[fromVersion][toVersion_], "MPF:UI:NOT_ALLOWED");
 
-        emit InstanceUpgraded(msg.sender, fromVersion_, toVersion_, arguments_);
+        emit InstanceUpgraded(msg.sender, fromVersion, toVersion_, arguments_);
 
         require(_upgradeInstance(msg.sender, toVersion_, arguments_), "MPF:UI:FAILED");
     }

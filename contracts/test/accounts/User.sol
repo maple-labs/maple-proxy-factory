@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity 0.8.7;
 
-import { IMapleProxyFactory } from "../../interfaces/IMapleProxyFactory.sol";
 import { IMapleProxied }      from "../../interfaces/IMapleProxied.sol";
+import { IMapleProxyFactory } from "../../interfaces/IMapleProxyFactory.sol";
 
 contract User {
 
