@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity 0.8.7;
 
-import { IProxied }     from "../modules/proxy-factory/contracts/interfaces/IProxied.sol";
 import { ProxyFactory } from "../modules/proxy-factory/contracts/ProxyFactory.sol";
 
-import { IMapleProxyFactory } from "./interfaces/IMapleProxyFactory.sol";
 import { IMapleGlobalsLike }  from "./interfaces/Interfaces.sol";
+import { IMapleProxied }      from "./interfaces/IMapleProxied.sol";
+import { IMapleProxyFactory } from "./interfaces/IMapleProxyFactory.sol";
 
 /// @title A Maple factory for Proxy contracts that proxy MapleProxied implementations.
 contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
@@ -16,6 +16,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     mapping(uint256 => mapping(uint256 => bool)) public override upgradeEnabledForPath;
 
+    /// @param mapleGlobals_ The address of a Maple Globals contract.
     constructor(address mapleGlobals_) {
         require(IMapleGlobalsLike(mapleGlobals = mapleGlobals_).governor() != address(0), "MPF:C:INVALID_GLOBALS");
     }
@@ -86,7 +87,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     // NOTE: The implementation proxied by the instance defines the access control logic for its own upgrade.
     function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) public override virtual {
-        uint256 fromVersion = _versionOf[IProxied(msg.sender).implementation()];
+        uint256 fromVersion = _versionOf[IMapleProxied(msg.sender).implementation()];
 
         require(upgradeEnabledForPath[fromVersion][toVersion_], "MPF:UI:NOT_ALLOWED");
 

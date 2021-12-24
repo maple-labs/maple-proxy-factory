@@ -90,7 +90,7 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev    Deploys a new instance proxying the default implementation version, with some initialization arguments.
-     *  @dev    Uses a nonce and `msg.sender` as a salt for the CREATE2 opcode during instantiation to produce deterministic addresses.
+     *          Uses a nonce and `msg.sender` as a salt for the CREATE2 opcode during instantiation to produce deterministic addresses.
      *  @param  arguments_ The initialization arguments to use for the instance deployment, if any.
      *  @param  salt_      The salt to use in the contract creation process.
      *  @return instance_  The address of the deployed proxy contract.
@@ -99,7 +99,7 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev   Enables upgrading from a version to a version of an implementation, with an optional migrator.
-     *  @dev   Only the Governor can call this function.
+     *         Only the Governor can call this function.
      *  @param fromVersion_ The starting version of the upgrade path.
      *  @param toVersion_   The destination version of the upgrade path.
      *  @param migrator_    The address of the migrator, if any.
@@ -108,7 +108,7 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev   Disables upgrading from a version to a version of a implementation.
-     *  @dev   Only the Governor can call this function.
+     *         Only the Governor can call this function.
      *  @param fromVersion_ The starting version of the upgrade path.
      *  @param toVersion_   The destination version of the upgrade path.
      */
@@ -116,7 +116,7 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev   Registers the address of an implementation contract as a version, with an optional initializer.
-     *  @dev   Only the Governor can call this function.
+     *         Only the Governor can call this function.
      *  @param version_               The version to register.
      *  @param implementationAddress_ The address of the implementation.
      *  @param initializer_           The address of the initializer, if any.
@@ -125,14 +125,14 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev   Sets the default version.
-     *  @dev   Only the Governor can call this function.
+     *         Only the Governor can call this function.
      *  @param version_ The implementation version to set as the default.
      */
     function setDefaultVersion(uint256 version_) external;
 
     /**
      *  @dev   Sets the Maple Globals contract.
-     *  @dev   Only the Governor can call this function.
+     *         Only the Governor can call this function.
      *  @param mapleGlobals_ The address of a Maple Globals contract.
      */
     function setGlobals(address mapleGlobals_) external;
@@ -165,7 +165,7 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
     /**
      *  @dev    Returns the address of a migrator contract for a migration path (from version, to version).
-     *  @dev    If oldVersion_ == newVersion_, the migrator is a initializer.
+     *          If oldVersion_ == newVersion_, the migrator is an initializer.
      *  @param  oldVersion_ The old version.
      *  @param  newVersion_ The new version.
      *  @return migrator_   The address of a migrator contract.
