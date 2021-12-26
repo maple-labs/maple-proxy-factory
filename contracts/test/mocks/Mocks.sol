@@ -4,7 +4,7 @@ pragma solidity 0.8.7;
 import { IMapleProxied }      from "../../interfaces/IMapleProxied.sol";
 import { IMapleProxyFactory } from "../../interfaces/IMapleProxyFactory.sol";
 
-import { MapleProxied } from "../../MapleProxied.sol";
+import { MapleProxiedInternals } from "../../MapleProxiedInternals.sol";
 
 contract MapleGlobalsMock {
 
@@ -16,7 +16,7 @@ contract MapleGlobalsMock {
 
 }
 
-contract MapleInstanceMock is IMapleProxied, MapleProxied {
+contract MapleInstanceMock is IMapleProxied, MapleProxiedInternals {
 
     function upgrade(uint256 toVersion_, bytes calldata arguments_) override external {
         IMapleProxyFactory(_factory()).upgradeInstance(toVersion_, arguments_);

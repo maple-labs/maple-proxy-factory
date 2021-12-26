@@ -14,10 +14,10 @@ interface IMapleProxied is IProxied {
     event Upgraded(uint256 toVersion_, bytes arguments_);
 
     /**
-     *  @notice Upgrades a contract implementation to a specific version.
-     *  @dev    Access control logic critical since caller can force a selfdestruct via a malicious `migrator_` which is delegatecalled.
-     *  @param  toVersion_ The version to upgrade to.
-     *  @param  arguments_ Some encoded arguments to use for the upgrade.
+     *  @dev   Upgrades a contract implementation to a specific version.
+     *         Access control logic critical since caller can force a selfdestruct via a malicious `migrator_` which is delegatecalled.
+     *  @param toVersion_ The version to upgrade to.
+     *  @param arguments_ Some encoded arguments to use for the upgrade.
      */
     function upgrade(uint256 toVersion_, bytes calldata arguments_) external;
 

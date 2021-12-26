@@ -3,3 +3,6 @@ hevm*
 .vscode/*
 /package
 .DS_Store
+artifacts/*
+docs/*
+metadata.json
