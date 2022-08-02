@@ -195,4 +195,22 @@ contract MapleProxyFactoryTests is TestUtils {
         assertEq(factory.mapleGlobals(), address(newGlobals));
     }
 
+    function test_isInstance() external {
+        bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt1"));
+
+        assertTrue(!user.try_mapleProxyFactory_createInstance(address(factory), arguments, salt), "Should fail: unregistered version");
+
+        governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
+        governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
+
+        address instance1 = user.mapleProxyFactory_createInstance(address(factory), arguments, salt);
+
+        assertTrue(factory.isInstance(instance1));
+
+        // Depoly a new instance and check that it fails
+        address instance2 = address(new MapleInstanceMock());
+        assertTrue(!factory.isInstance(instance2));
+    }
+
 }
