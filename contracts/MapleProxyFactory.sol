@@ -14,6 +14,8 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     uint256 public override defaultVersion;
 
+    mapping(address => bool) public override isInstance;
+
     mapping(uint256 => mapping(uint256 => bool)) public override upgradeEnabledForPath;
 
     /// @param mapleGlobals_ The address of a Maple Globals contract.
@@ -81,6 +83,8 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         bool success;
         ( success, instance_ ) = _newInstance(arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
         require(success, "MPF:CI:FAILED");
+
+        isInstance[instance_] = true;
 
         emit InstanceDeployed(defaultVersion, instance_, arguments_);
     }

@@ -164,6 +164,13 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
     function implementationOf(uint256 version_) external view returns (address implementation_);
 
     /**
+     *  @dev    Returns if a given address has been deployed by this factory/
+     *  @param  instance_   The address to check.
+     *  @return isInstance_ A boolean indication if the address has been deployed by this factory.
+     */
+    function isInstance(address instance_) external view returns (bool isInstance_);
+
+    /**
      *  @dev    Returns the address of a migrator contract for a migration path (from version, to version).
      *          If oldVersion_ == newVersion_, the migrator is an initializer.
      *  @param  oldVersion_ The old version.
