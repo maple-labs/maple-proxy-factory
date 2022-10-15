@@ -18,7 +18,6 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     mapping(uint256 => mapping(uint256 => bool)) public override upgradeEnabledForPath;
 
-    /// @param mapleGlobals_ The address of a Maple Globals contract.
     constructor(address mapleGlobals_) {
         require(IMapleGlobalsLike(mapleGlobals = mapleGlobals_).governor() != address(0), "MPF:C:INVALID_GLOBALS");
     }
@@ -28,9 +27,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         _;
     }
 
-    /********************************/
-    /*** Administrative Functions ***/
-    /********************************/
+    /******************************************************************************************************************************/
+    /*** Admin Functions                                                                                                        ***/
+    /******************************************************************************************************************************/
 
     function disableUpgradePath(uint256 fromVersion_, uint256 toVersion_) public override virtual onlyGovernor {
         require(fromVersion_ != toVersion_,                              "MPF:DUP:OVERWRITING_INITIALIZER");
@@ -75,9 +74,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         emit MapleGlobalsSet(mapleGlobals = mapleGlobals_);
     }
 
-    /**************************/
-    /*** Instance Functions ***/
-    /**************************/
+    /******************************************************************************************************************************/
+    /*** Instance Functions                                                                                                     ***/
+    /******************************************************************************************************************************/
 
     function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
         bool success;
@@ -100,9 +99,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         require(_upgradeInstance(msg.sender, toVersion_, arguments_), "MPF:UI:FAILED");
     }
 
-    /**********************/
-    /*** View Functions ***/
-    /**********************/
+    /******************************************************************************************************************************/
+    /*** View Functions                                                                                                         ***/
+    /******************************************************************************************************************************/
 
     function getInstanceAddress(bytes calldata arguments_, bytes32 salt_) public view override virtual returns (address instanceAddress_) {
         return _getDeterministicProxyAddress(keccak256(abi.encodePacked(arguments_, salt_)));

@@ -5,9 +5,9 @@ import { IMapleProxyFactory } from "../../interfaces/IMapleProxyFactory.sol";
 
 contract Governor {
 
-    /************************/
-    /*** Direct Functions ***/
-    /************************/
+    /******************************************************************************************************************************/
+    /*** Direct Functions                                                                                                       ***/
+    /******************************************************************************************************************************/
 
     function mapleProxyFactory_disableUpgradePath(address factory_, uint256 fromVersion_, uint256 toVersion_) external {
         IMapleProxyFactory(factory_).disableUpgradePath(fromVersion_, toVersion_);
@@ -34,9 +34,9 @@ contract Governor {
         IMapleProxyFactory(factory_).setGlobals(mapleGlobals_);
     }
 
-    /*********************/
-    /*** Try Functions ***/
-    /*********************/
+    /******************************************************************************************************************************/
+    /*** Try Functions                                                                                                          ***/
+    /******************************************************************************************************************************/
 
     function try_mapleProxyFactory_disableUpgradePath(address factory_, uint256 fromVersion_,uint256 toVersion_) external returns (bool ok_) {
         ( ok_, ) = factory_.call(abi.encodeWithSelector(IMapleProxyFactory.disableUpgradePath.selector, fromVersion_, toVersion_));

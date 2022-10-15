@@ -1,0 +1,9 @@
+name: non-transparent-proxy
+version: 1.0.0-beta.0
+source: contracts
+packages:
+  - path: contracts/NonTransparentProxied.sol
+    contractName: NonTransparentProxied
+  - path: contracts/NonTransparentProxy.sol
+    contractName: NonTransparentProxy
+customDescription: NonTransparentProxy Artifacts and ABIs
