@@ -6,9 +6,9 @@ import { IMapleProxyFactory } from "../../interfaces/IMapleProxyFactory.sol";
 
 contract User {
 
-    /************************/
-    /*** Direct Functions ***/
-    /************************/
+    /******************************************************************************************************************************/
+    /*** Direct Functions                                                                                                       ***/
+    /******************************************************************************************************************************/
 
     function mapleProxied_upgrade(address instance_, uint256 toVersion_, bytes calldata arguments_) external {
         IMapleProxied(instance_).upgrade(toVersion_, arguments_);
@@ -18,9 +18,9 @@ contract User {
         return IMapleProxyFactory(factory_).createInstance(arguments_, salt_);
     }
 
-    /*********************/
-    /*** Try Functions ***/
-    /*********************/
+    /******************************************************************************************************************************/
+    /*** Try Functions                                                                                                          ***/
+    /******************************************************************************************************************************/
 
     function try_mapleProxied_upgrade(address instance_, uint256 toVersion_, bytes calldata arguments_) external returns (bool ok_) {
         ( ok_, ) = instance_.call(abi.encodeWithSelector(IMapleProxied.upgrade.selector, toVersion_, arguments_));

@@ -1,8 +1,0 @@
-name: maple-proxy-factory
-version: 1.0.0
-source: contracts
-packages:
-  - path: contracts/MapleProxyFactory.sol
-    contractName: MapleProxyFactory
-    customChecksum: 0x48376956b7d296532583145b1e04f24d68bf44ca0372721b66ffd1b2b3be6ee9
-customDescription: Maple Proxy Factory Artifacts and ABIs

@@ -31,15 +31,15 @@ contract MapleProxyFactoryConstructorTests is TestUtils {
 
 contract MapleProxyFactoryTests is TestUtils {
 
-    Governor             internal governor;
-    Governor             internal notGovernor;
-    MapleGlobalsMock     internal globals;
-    MapleProxyFactory    internal factory;
-    MapleInstanceMock    internal implementation1;
-    MapleInstanceMock    internal implementation2;
-    MockInitializerV1    internal initializerV1;
-    MockInitializerV2    internal initializerV2;
-    User                 internal user;
+    Governor          internal governor;
+    Governor          internal notGovernor;
+    MapleGlobalsMock  internal globals;
+    MapleProxyFactory internal factory;
+    MapleInstanceMock internal implementation1;
+    MapleInstanceMock internal implementation2;
+    MockInitializerV1 internal initializerV1;
+    MockInitializerV2 internal initializerV2;
+    User              internal user;
 
     function setUp() external {
         governor        = new Governor();

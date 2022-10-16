@@ -6,9 +6,9 @@ import { IDefaultImplementationBeacon } from "../../modules/proxy-factory/contra
 /// @title A Maple factory for Proxy contracts that proxy MapleProxied implementations.
 interface IMapleProxyFactory is IDefaultImplementationBeacon {
 
-    /**************/
-    /*** Events ***/
-    /**************/
+    /******************************************************************************************************************************/
+    /*** Events                                                                                                                  ***/
+    /******************************************************************************************************************************/
 
     /**
      *  @dev   A default version was set.
@@ -62,9 +62,9 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
      */
     event UpgradePathEnabled(uint256 indexed fromVersion_, uint256 indexed toVersion_, address indexed migrator_);
 
-    /***********************/
-    /*** State Variables ***/
-    /***********************/
+    /******************************************************************************************************************************/
+    /*** State Variables                                                                                                        ***/
+    /******************************************************************************************************************************/
 
     /**
      *  @dev The default version.
@@ -84,9 +84,9 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
      */
     function upgradeEnabledForPath(uint256 toVersion_, uint256 fromVersion_) external view returns (bool allowed_);
 
-    /********************************/
-    /*** State Changing Functions ***/
-    /********************************/
+    /******************************************************************************************************************************/
+    /*** State Changing Functions                                                                                               ***/
+    /******************************************************************************************************************************/
 
     /**
      *  @dev    Deploys a new instance proxying the default implementation version, with some initialization arguments.
@@ -144,9 +144,9 @@ interface IMapleProxyFactory is IDefaultImplementationBeacon {
      */
     function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) external;
 
-    /**********************/
-    /*** View Functions ***/
-    /**********************/
+    /******************************************************************************************************************************/
+    /*** View Functions                                                                                                         ***/
+    /******************************************************************************************************************************/
 
     /**
      *  @dev    Returns the deterministic address of a potential proxy, given some arguments and salt.

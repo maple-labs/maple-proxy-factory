@@ -1,8 +1,6 @@
-/out
-hevm*
-.vscode/*
-/package
+# Forge
+cache/
+out/
+
+# MacOS
 .DS_Store
-artifacts/*
-docs/*
-metadata.json
