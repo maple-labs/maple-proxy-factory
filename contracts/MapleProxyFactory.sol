@@ -79,8 +79,10 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
 
     function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
         bool success;
-        ( success, instance_ ) = _newInstance(arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
-        require(success, "MPF:CI:FAILED");
+        bytes memory result_;
+        ( success, instance_, result_ ) = _newInstance(arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
+        string memory errorString = string(abi.encodePacked(result_));
+        require(success, errorString);
 
         emit InstanceDeployed(defaultVersion, instance_, arguments_);
     }
