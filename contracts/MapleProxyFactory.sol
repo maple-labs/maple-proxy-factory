@@ -27,6 +27,11 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         _;
     }
 
+    modifier whenProtocolNotPaused() {
+        require(!IMapleGlobalsLike(mapleGlobals).protocolPaused(), "MPF:PROTOCOL_PAUSED");
+        _;
+    }
+
     /******************************************************************************************************************************/
     /*** Admin Functions                                                                                                        ***/
     /******************************************************************************************************************************/
@@ -78,7 +83,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     /*** Instance Functions                                                                                                     ***/
     /******************************************************************************************************************************/
 
-    function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual returns (address instance_) {
+    function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual whenProtocolNotPaused returns (address instance_) {
         bool success;
         ( success, instance_ ) = _newInstance(arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
         require(success, "MPF:CI:FAILED");
@@ -89,7 +94,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
     }
 
     // NOTE: The implementation proxied by the instance defines the access control logic for its own upgrade.
-    function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) public override virtual {
+    function upgradeInstance(uint256 toVersion_, bytes calldata arguments_) public override whenProtocolNotPaused virtual {
         uint256 fromVersion = _versionOf[IMapleProxied(msg.sender).implementation()];
 
         require(upgradeEnabledForPath[fromVersion][toVersion_], "MPF:UI:NOT_ALLOWED");

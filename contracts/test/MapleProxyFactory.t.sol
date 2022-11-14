@@ -83,6 +83,29 @@ contract MapleProxyFactoryTests is TestUtils {
         assertEq(factory.defaultImplementation(), address(0), "Incorrect defaultImplementation");
     }
 
+    function test_createInstance_protocolPaused() external {
+        governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
+        governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
+
+        globals.setProtocolPaused(true);
+
+        bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt"));
+
+        vm.expectRevert("MPF:PROTOCOL_PAUSED");
+        factory.createInstance(arguments, salt);
+
+        // Unpause protocol
+        globals.setProtocolPaused(false);
+
+        MapleInstanceMock instance = MapleInstanceMock(factory.createInstance(arguments, salt));
+
+        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance));
+        assertEq(instance.factory(),                           address(factory));
+        assertEq(instance.implementation(),                    address(implementation1));
+        assertEq(factory.versionOf(instance.implementation()), 1);
+    }
+
     function test_createInstance() external {
 
         bytes memory arguments = new bytes(0);
@@ -154,6 +177,36 @@ contract MapleProxyFactoryTests is TestUtils {
         assertTrue(    governor.try_mapleProxyFactory_disableUpgradePath(address(factory), 1, 2), "Should succeed");
 
         assertEq(factory.migratorForPath(1, 2), address(0), "Incorrect migrator");
+    }
+
+    function test_upgradeInstance_protocolPaused() external {
+        governor.mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1));
+        governor.mapleProxyFactory_registerImplementation(address(factory), 2, address(implementation2), address(initializerV2));
+        governor.mapleProxyFactory_setDefaultVersion(address(factory), 1);
+
+        bytes memory arguments = new bytes(0);
+        bytes32 salt = keccak256(abi.encodePacked("salt"));
+
+        MapleInstanceMock instance = MapleInstanceMock(factory.createInstance(arguments, salt));
+
+        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance));
+        assertEq(instance.factory(),                           address(factory));
+        assertEq(instance.implementation(),                    address(implementation1));
+        assertEq(factory.versionOf(instance.implementation()), 1);
+
+        governor.mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, address(0));
+
+        globals.setProtocolPaused(true);
+
+        vm.expectRevert("MPF:PROTOCOL_PAUSED");
+        instance.upgrade(2, new bytes(0));
+
+        globals.setProtocolPaused(false);
+        instance.upgrade(2, new bytes(0));
+
+        assertEq(instance.implementation(), address(implementation2));
+
+        assertEq(factory.versionOf(instance.implementation()), 2);
     }
 
     function test_upgradeInstance() external {
