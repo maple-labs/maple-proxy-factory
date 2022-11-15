@@ -100,7 +100,7 @@ contract MapleProxyFactoryTests is TestUtils {
 
         MapleInstanceMock instance = MapleInstanceMock(factory.createInstance(arguments, salt));
 
-        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance));
+        assertEq(factory.getInstanceAddress(arguments, salt),  address(instance));
         assertEq(instance.factory(),                           address(factory));
         assertEq(instance.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance.implementation()), 1);
@@ -189,7 +189,7 @@ contract MapleProxyFactoryTests is TestUtils {
 
         MapleInstanceMock instance = MapleInstanceMock(factory.createInstance(arguments, salt));
 
-        assertEq(factory.getInstanceAddress(arguments, salt),   address(instance));
+        assertEq(factory.getInstanceAddress(arguments, salt),  address(instance));
         assertEq(instance.factory(),                           address(factory));
         assertEq(instance.implementation(),                    address(implementation1));
         assertEq(factory.versionOf(instance.implementation()), 1);
