@@ -10,8 +10,14 @@ contract MapleGlobalsMock {
 
     address public governor;
 
+    bool public protocolPaused;
+
     constructor (address governor_) {
         governor = governor_;
+    }
+
+    function setProtocolPaused(bool protocolPaused_) external {
+        protocolPaused = protocolPaused_;
     }
 
 }
