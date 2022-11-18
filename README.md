@@ -1,6 +1,10 @@
 # Maple Proxy Factory
 
+[![Foundry][foundry-badge]][foundry]
 [![Forge CI](https://github.com/maple-labs/maple-proxy-factory/actions/workflows/forge.yaml/badge.svg)](https://circleci.com/gh/maple-labs/maple-proxy-factory/tree/main) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+[foundry]: https://getfoundry.sh/
+[foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
 
 `MapleProxyFactory` is a Maple protocol specific implementation of ProxyFactory, a set of generic contracts developed by Maple Labs to be able to deploy proxies from a factory and manage multiple implementations in a centrally managed contract.
 
@@ -56,5 +60,5 @@ For all technical documentation related to the Maple V2 protocol, please refer t
 ---
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/44272939/116272804-33e78d00-a74f-11eb-97ab-77b7e13dc663.png" height="100" />
+  <img src="https://user-images.githubusercontent.com/44272939/196706799-fe96d294-f700-41e7-a65f-2d754d0a6eac.gif" height="100" />
 </p>
