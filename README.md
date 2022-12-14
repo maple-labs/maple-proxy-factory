@@ -19,6 +19,7 @@ This contract has the following capabilities:
 `MapleProxyFactory` inherits from the generic `ProxyFactory` contract which can be found [here](https://github.com/maple-labs/proxy-factory).
 
 ## Testing and Development
+
 #### Setup
 This project was built using [Foundry](https://book.getfoundry.sh/). Refer to installation instructions [here](https://github.com/foundry-rs/foundry#installation).
 
@@ -35,11 +36,13 @@ forge install
 ## Roles and Permissions
 - **Governor**: Controls all implementation-related logic in the MapleProxyFactory, allowing for new versions of proxies to be deployed from the same factory and upgrade paths between versions to be allowed.
 
-## Audit Reports
-| Auditor | Version | Report link |
+## Security
+
+| Auditor | Report Link |
 |---|---|
-| Trail of Bits | v1.0.0 | [ToB - Dec 28, 2021](https://docs.google.com/viewer?url=https://github.com/maple-labs/maple-core/files/7847684/Maple.Finance.-.Final.Report_v3.pdf) |
-| Code 4rena    | v1.0.0 | [C4 - Jan 5, 2022](https://code4rena.com/reports/2021-12-maple/) |
+| Trail of Bits | [`2022-08-24 - Trail of Bits Report`](https://docs.google.com/viewer?url=https://github.com/maple-labs/maple-v2-audits/files/10223544/Maple.Finance.v2.-.Trail.of.Bits.-.Final.Report.pdf) |
+| Spearbit | [`2022-10-17 - Spearbit Report`](https://docs.google.com/viewer?url=https://github.com/maple-labs/maple-v2-audits/files/10223545/Maple.Finance.v2.-.Spearbit.pdf) |
+| Three Sigma | [`2022-10-24 - Three Sigma Report`](https://docs.google.com/viewer?url=https://github.com/maple-labs/maple-v2-audits/files/10223541/three-sigma_maple-finance_code-audit_v1.1.1.pdf) |
 
 ## Bug Bounty (v1.0.0)
 
