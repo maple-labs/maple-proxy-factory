@@ -45,12 +45,6 @@ forge install
 
 For all information related to the ongoing bug bounty for these contracts run by [Immunefi](https://immunefi.com/), please visit this [site](https://immunefi.com/bounty/maple/).
 
-| Severity of Finding | Payout |
-|---|---|
-| Critical | $50,000 |
-| High     | $25,000 |
-| Medium   | $1,000  |
-
 ## About Maple
 
 [Maple Finance](https://maple.finance/) is a decentralized corporate credit market. Maple provides capital to institutional borrowers through globally accessible fixed-income yield opportunities.
