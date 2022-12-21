@@ -16,9 +16,11 @@ This contract has the following capabilities:
 5. Perform upgrades from one implementation to another for a given proxy.
 
 ## Dependencies/Inheritance
+
 `MapleProxyFactory` inherits from the generic `ProxyFactory` contract which can be found [here](https://github.com/maple-labs/proxy-factory).
 
 ## Setup
+
 This project was built using [Foundry](https://book.getfoundry.sh/). Refer to installation instructions [here](https://github.com/foundry-rs/foundry#installation).
 
 ```sh
@@ -26,13 +28,16 @@ git clone git@github.com:maple-labs/maple-proxy-factory.git
 cd maple-proxy-factory
 forge install
 ```
+
 ## Running Tests
 
 - To run all tests: `forge test`
 - To run specific tests: `forge test --match <test_name>`
 
 ## Roles and Permissions
+
 - **Governor**: Controls all implementation-related logic in the MapleProxyFactory, allowing for new versions of proxies to be deployed from the same factory and upgrade paths between versions to be allowed.
+
 ## Security
 
 | Auditor | Report Link |
