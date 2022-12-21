@@ -15,11 +15,10 @@ This contract has the following capabilities:
 4. Deploy proxy contracts with a given implementation.
 5. Perform upgrades from one implementation to another for a given proxy.
 
-### Dependencies/Inheritance
+## Dependencies/Inheritance
 `MapleProxyFactory` inherits from the generic `ProxyFactory` contract which can be found [here](https://github.com/maple-labs/proxy-factory).
 
-## Testing and Development
-#### Setup
+## Setup
 This project was built using [Foundry](https://book.getfoundry.sh/). Refer to installation instructions [here](https://github.com/foundry-rs/foundry#installation).
 
 ```sh
