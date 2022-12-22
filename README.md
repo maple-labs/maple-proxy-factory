@@ -42,8 +42,6 @@ forge install
 - To run all tests: `forge test`
 - To run specific tests: `forge test --match <test_name>`
 
-`./scripts/test.sh` is used to enable Foundry profile usage with the `-p` flag. Profiles are used to specify the number of fuzz runs.
-
 ## Audit Reports
 
 | Auditor | Report Link |

@@ -54,11 +54,7 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         upgradeEnabledForPath[fromVersion_][toVersion_] = true;
     }
 
-    function registerImplementation(
-        uint256 version_,
-        address implementationAddress_,
-        address initializer_
-    )
+    function registerImplementation(uint256 version_, address implementationAddress_, address initializer_)
         public override virtual onlyGovernor
     {
         // Version 0 reserved as "no version" since default `defaultVersion` is 0.
