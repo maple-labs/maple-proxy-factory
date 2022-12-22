@@ -34,9 +34,9 @@ contract MapleProxyFactoryTests is TestUtils {
     Governor          internal governor;
     Governor          internal notGovernor;
     MapleGlobalsMock  internal globals;
-    MapleProxyFactory internal factory;
     MapleInstanceMock internal implementation1;
     MapleInstanceMock internal implementation2;
+    MapleProxyFactory internal factory;
     MockInitializerV1 internal initializerV1;
     MockInitializerV2 internal initializerV2;
     User              internal user;
@@ -51,19 +51,66 @@ contract MapleProxyFactoryTests is TestUtils {
         user            = new User();
 
         globals = new MapleGlobalsMock(address(governor));
+
         factory = new MapleProxyFactory(address(globals));
     }
 
     function test_registerImplementation() external {
-        assertTrue(!notGovernor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: not governor");
-        assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 0, address(implementation1), address(initializerV1)), "Should fail: invalid version");
-        assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(0),               address(initializerV1)), "Should fail: invalid implementation address");
-        assertTrue(    governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should succeed");
-        assertTrue(   !governor.try_mapleProxyFactory_registerImplementation(address(factory), 1, address(implementation1), address(initializerV1)), "Should fail: already registered version");
+        assertTrue(
+            !notGovernor.try_mapleProxyFactory_registerImplementation(
+                address(factory),
+                1,
+                address(implementation1),
+                address(initializerV1)
+            ),
+            "Should fail: not governor"
+        );
 
-        assertEq(factory.implementationOf(1),                 address(implementation1), "Incorrect state of implementationOf");
-        assertEq(factory.migratorForPath(1, 1),               address(initializerV1),   "Incorrect state of migratorForPath");
-        assertEq(factory.versionOf(address(implementation1)), 1,                        "Incorrect state of versionOf");
+        assertTrue(
+            !governor.try_mapleProxyFactory_registerImplementation(
+                address(factory),
+                0,
+                address(implementation1),
+                address(initializerV1)
+            ),
+            "Should fail: invalid version"
+        );
+
+        assertTrue(
+            !governor.try_mapleProxyFactory_registerImplementation(
+                address(factory),
+                1,
+                address(0),
+                address(initializerV1)
+            ),
+            "Should fail: invalid implementation address"
+        );
+
+        assertTrue(
+            governor.try_mapleProxyFactory_registerImplementation(
+                address(factory),
+                1,
+                address(implementation1),
+                address(initializerV1)
+            ),
+            "Should succeed"
+        );
+
+        assertTrue(
+            !governor.try_mapleProxyFactory_registerImplementation(
+                address(factory),
+                1,
+                address(implementation1),
+                address(initializerV1)
+            ),
+            "Should fail: already registered version"
+        );
+
+        assertEq(factory.implementationOf(1), address(implementation1), "Incorrect state of implementationOf");
+
+        assertEq(factory.migratorForPath(1, 1), address(initializerV1), "Incorrect state of migratorForPath");
+
+        assertEq(factory.versionOf(address(implementation1)), 1, "Incorrect state of versionOf");
     }
 
     function test_setDefaultVersion() external {
@@ -144,8 +191,13 @@ contract MapleProxyFactoryTests is TestUtils {
         address migrator = address(new EmptyContract());
 
         assertTrue(!notGovernor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should fail: not governor");
-        assertTrue(   !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 1, migrator), "Should fail: overwriting initializer");
-        assertTrue(    governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should succeed: upgrade");
+
+        assertTrue(
+            !governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 1, migrator),
+            "Should fail: overwriting initializer"
+        );
+
+        assertTrue(governor.try_mapleProxyFactory_enableUpgradePath(address(factory), 1, 2, migrator), "Should succeed: upgrade");
 
         assertEq(factory.migratorForPath(1, 2), migrator, "Incorrect migrator");
 
@@ -261,7 +313,7 @@ contract MapleProxyFactoryTests is TestUtils {
 
         assertTrue(factory.isInstance(instance1));
 
-        // Depoly a new instance and check that it fails
+        // Deploy a new instance and check that it fails
         address instance2 = address(new MapleInstanceMock());
         assertTrue(!factory.isInstance(instance2));
     }

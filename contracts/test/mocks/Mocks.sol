@@ -24,8 +24,12 @@ contract MapleGlobalsMock {
 
 contract MapleInstanceMock is IMapleProxied, MapleProxiedInternals {
 
-    function upgrade(uint256 toVersion_, bytes calldata arguments_) override external {
-        IMapleProxyFactory(_factory()).upgradeInstance(toVersion_, arguments_);
+    function factory() external view override returns (address factory_) {
+        return _factory();
+    }
+
+    function implementation() external view override returns (address implementation_) {
+        return _implementation();
     }
 
     function migrate(address migrator_, bytes calldata arguments_) external override {
@@ -36,12 +40,8 @@ contract MapleInstanceMock is IMapleProxied, MapleProxiedInternals {
         _setImplementation(newImplementation_);
     }
 
-    function factory() external view override returns (address factory_) {
-        return _factory();
-    }
-
-    function implementation() external view override returns (address implementation_) {
-        return _implementation();
+    function upgrade(uint256 toVersion_, bytes calldata arguments_) override external {
+        IMapleProxyFactory(_factory()).upgradeInstance(toVersion_, arguments_);
     }
 
 }
