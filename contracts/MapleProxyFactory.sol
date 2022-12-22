@@ -32,9 +32,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         _;
     }
 
-    /******************************************************************************************************************************/
-    /*** Admin Functions                                                                                                        ***/
-    /******************************************************************************************************************************/
+    /**************************************************************************************************************************************/
+    /*** Admin Functions                                                                                                                ***/
+    /**************************************************************************************************************************************/
 
     function disableUpgradePath(uint256 fromVersion_, uint256 toVersion_) public override virtual onlyGovernor {
         require(fromVersion_ != toVersion_,                              "MPF:DUP:OVERWRITING_INITIALIZER");
@@ -54,7 +54,13 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         upgradeEnabledForPath[fromVersion_][toVersion_] = true;
     }
 
-    function registerImplementation(uint256 version_, address implementationAddress_, address initializer_) public override virtual onlyGovernor {
+    function registerImplementation(
+        uint256 version_,
+        address implementationAddress_,
+        address initializer_
+    )
+        public override virtual onlyGovernor
+    {
         // Version 0 reserved as "no version" since default `defaultVersion` is 0.
         require(version_ != uint256(0), "MPF:RI:INVALID_VERSION");
 
@@ -79,11 +85,13 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         emit MapleGlobalsSet(mapleGlobals = mapleGlobals_);
     }
 
-    /******************************************************************************************************************************/
-    /*** Instance Functions                                                                                                     ***/
-    /******************************************************************************************************************************/
+    /**************************************************************************************************************************************/
+    /*** Instance Functions                                                                                                             ***/
+    /**************************************************************************************************************************************/
 
-    function createInstance(bytes calldata arguments_, bytes32 salt_) public override virtual whenProtocolNotPaused returns (address instance_) {
+    function createInstance(bytes calldata arguments_, bytes32 salt_)
+        public override virtual whenProtocolNotPaused returns (address instance_)
+    {
         bool success;
         ( success, instance_ ) = _newInstance(arguments_, keccak256(abi.encodePacked(arguments_, salt_)));
         require(success, "MPF:CI:FAILED");
@@ -104,9 +112,9 @@ contract MapleProxyFactory is IMapleProxyFactory, ProxyFactory {
         require(_upgradeInstance(msg.sender, toVersion_, arguments_), "MPF:UI:FAILED");
     }
 
-    /******************************************************************************************************************************/
-    /*** View Functions                                                                                                         ***/
-    /******************************************************************************************************************************/
+    /**************************************************************************************************************************************/
+    /*** View Functions                                                                                                                 ***/
+    /**************************************************************************************************************************************/
 
     function getInstanceAddress(bytes calldata arguments_, bytes32 salt_) public view override virtual returns (address instanceAddress_) {
         return _getDeterministicProxyAddress(keccak256(abi.encodePacked(arguments_, salt_)));

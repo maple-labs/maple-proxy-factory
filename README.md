@@ -6,6 +6,8 @@
 [foundry]: https://getfoundry.sh/
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
 
+## Overview
+
 `MapleProxyFactory` is a Maple protocol specific implementation of ProxyFactory, a set of generic contracts developed by Maple Labs to be able to deploy proxies from a factory and manage multiple implementations in a centrally managed contract.
 
 This contract has the following capabilities:
@@ -17,7 +19,13 @@ This contract has the following capabilities:
 
 ## Dependencies/Inheritance
 
-`MapleProxyFactory` inherits from the generic `ProxyFactory` contract which can be found [here](https://github.com/maple-labs/proxy-factory).
+Contracts in this repo inherit and import code from:
+- [`maple-labs/proxy-factory`](https://github.com/maple-labs/proxy-factory)
+
+Contracts inherit and import code in the following ways:
+- `MapleProxyFactory` inherits `ProxyFactory` for proxy factory logic.
+
+Versions of dependencies can be checked with `git submodule status`.
 
 ## Setup
 
@@ -34,11 +42,9 @@ forge install
 - To run all tests: `forge test`
 - To run specific tests: `forge test --match <test_name>`
 
-## Roles and Permissions
+`./scripts/test.sh` is used to enable Foundry profile usage with the `-p` flag. Profiles are used to specify the number of fuzz runs.
 
-- **Governor**: Controls all implementation-related logic in the MapleProxyFactory, allowing for new versions of proxies to be deployed from the same factory and upgrade paths between versions to be allowed.
-
-## Security
+## Audit Reports
 
 | Auditor | Report Link |
 |---|---|
@@ -50,7 +56,7 @@ forge install
 | Spearbit | [`2022-10-17 - Spearbit Report`](https://docs.google.com/viewer?url=https://github.com/maple-labs/maple-v2-audits/files/10223545/Maple.Finance.v2.-.Spearbit.pdf) |
 | Three Sigma | [`2022-10-24 - Three Sigma Report`](https://docs.google.com/viewer?url=https://github.com/maple-labs/maple-v2-audits/files/10223541/three-sigma_maple-finance_code-audit_v1.1.1.pdf) |
 
-## Bug Bounty (v1.0.0)
+## Bug Bounty
 
 For all information related to the ongoing bug bounty for these contracts run by [Immunefi](https://immunefi.com/), please visit this [site](https://immunefi.com/bounty/maple/).
 
